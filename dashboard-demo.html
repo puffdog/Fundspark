@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FundSpark</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#28a745',
+                        secondary: '#fcd500',
+                        dark: '#1a1a1a'
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-poppins bg-gray-50">
+    <!-- Notification Toast -->
+    <div id="notification" class="fixed top-4 right-4 z-50 bg-primary text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
+        <span id="notification-text">Action completed!</span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p class="text-gray-600">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+            <div class="flex items-center">
+                <img src="ipe029mj6f.jpg" alt="FundSpark Logo" class="h-8 w-auto">
+                <span class="ml-2 text-xl font-bold text-dark">FundSpark</span>
+            </div>
+            <button id="close-sidebar" class="lg:hidden">
+                <span class="text-gray-500 text-xl">×</span>
+            </button>
+        </div>
+        
+        <nav class="mt-6">
+            <div class="px-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
+                        J
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">John Doe</p>
+                        <p class="text-xs text-gray-500">Free Plan</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-1 px-3">
+                <a href="#" onclick="showSection('overview')" class="nav-link bg-primary/10 text-primary flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📊</span>
+                    Overview
+                </a>
+                <a href="#" onclick="showSection('business-plan')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📋</span>
+                    Business Plans
+                </a>
+                <a href="#" onclick="showSection('funding')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">💰</span>
+                    Funding Opportunities
+                </a>
+                <a href="#" onclick="showSection('tenders')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">🏛️</span>
+                    Tenders
+                </a>
+                <a href="#" onclick="showSection('applications')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📄</span>
+                    My Applications
+                </a>
+                <a href="#" onclick="showSection('templates')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📚</span>
+                    Templates & Resources
+                </a>
+                <a href="#" onclick="showSection('profile')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">👤</span>
+                    Business Profile
+                </a>
+                <a href="#" onclick="showSection('settings')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">⚙️</span>
+                    Settings
+                </a>
+            </div>
+            
+            <div class="mt-8 px-3">
+                <div class="bg-gradient-to-r from-primary to-green-600 rounded-lg p-4 text-white">
+                    <h3 class="text-sm font-semibold mb-2">Upgrade to Pro</h3>
+                    <p class="text-xs mb-3 opacity-90">Get unlimited business plans and priority support</p>
+                    <button onclick="showUpgrade()" class="w-full bg-white text-primary px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors">
+                        Upgrade Now
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="absolute bottom-0 w-full p-3 border-t border-gray-200">
+            <button onclick="logout()" class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg">
+                <span class="mr-3">🚪</span>
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64">
+        <!-- Top Navigation -->
+        <div class="sticky top-0 z-40 lg:mx-auto bg-white border-b border-gray-200">
+            <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+                <button id="open-sidebar" class="lg:hidden">
+                    <span class="text-gray-500 text-xl">☰</span>
+                </button>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden sm:block">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-600">🎯 Demo Mode</span>
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">All buttons work!</span>
+                        </div>
+                    </div>
+                    <a href="index.html" class="text-sm text-primary hover:underline">← Back to Website</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <main class="py-6">
+            <!-- Overview Section -->
+            <div id="overview-section" class="section-content">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <!-- Welcome Header -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Welcome back, John! 👋</h1>
+                        <p class="mt-2 text-gray-600">Here's what's happening with your business funding journey.</p>
+                    </div>
+
+                    <!-- Demo Notice -->
+                    <div class="mb-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <span class="text-2xl">✨</span>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-yellow-800">Fully Interactive Demo</h3>
+                                <div class="mt-2 text-sm text-yellow-700">
+                                    <p>All buttons, forms, and features are now fully functional with realistic dummy data!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showSection('business-plan')">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">📋</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Business Plans</dt>
+                                            <dd class="text-lg font-medium text-gray-900">3</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showSection('funding')">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">💰</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Opportunities</dt>
+                                            <dd class="text-lg font-medium text-gray-900">23</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showSection('applications')">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">📄</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Applications</dt>
+                                            <dd class="text-lg font-medium text-gray-900">5</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showTasks()">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">✅</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Tasks Done</dt>
+                                            <dd class="text-lg font-medium text-gray-900">18</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Notifications -->
+                    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h3 class="text-sm font-semibold text-blue-900 mb-3">🔔 Recent Updates</h3>
+                        <div class="space-y-2">
+                            <div class="text-sm text-blue-800">✅ Your SEDA Grant application was approved!</div>
+                            <div class="text-sm text-blue-800">📋 New business plan template available</div>
+                            <div class="text-sm text-blue-800">💰 3 new funding opportunities match your profile</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <button onclick="showCreateBusinessPlan()" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">📝</div>
+                                <h4 class="font-medium text-gray-900">Start Business Plan</h4>
+                                <p class="text-sm text-gray-600 mt-1">Use our guided builder</p>
+                            </button>
+                            <button onclick="showSection('funding')" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">🔍</div>
+                                <h4 class="font-medium text-gray-900">Find Funding</h4>
+                                <p class="text-sm text-gray-600 mt-1">Browse opportunities</p>
+                            </button>
+                            <button onclick="showSection('tenders')" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">🏛️</div>
+                                <h4 class="font-medium text-gray-900">Browse Tenders</h4>
+                                <p class="text-sm text-gray-600 mt-1">Government contracts</p>
+                            </button>
+                            <button onclick="showSection('templates')" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">📚</div>
+                                <h4 class="font-medium text-gray-900">Templates</h4>
+                                <p class="text-sm text-gray-600 mt-1">Download resources</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white shadow rounded-lg">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Recent Business Plans</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="editBusinessPlan('tech-startup')">
+                                        <h4 class="font-medium text-gray-900">Tech Startup Plan</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Mobile app development</p>
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">85% Complete</span>
+                                        </div>
+                                    </div>
+                                    <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="editBusinessPlan('restaurant')">
+                                        <h4 class="font-medium text-gray-900">Restaurant Concept</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Local food delivery</p>
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">60% Complete</span>
+                                        </div>
+                                    </div>
+                                    <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="editBusinessPlan('consulting')">
+                                        <h4 class="font-medium text-gray-900">Consulting Firm</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Business advisory services</p>
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">30% Complete</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Latest Opportunities</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="viewOpportunity('seda-grant')">
+                                        <h4 class="font-medium text-gray-900">SEDA Youth Grant</h4>
+                                        <p class="text-sm text-gray-600 mt-1">R50,000 - R200,000</p>
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">Grant</span>
+                                            <span class="ml-2">Due: March 30</span>
+                                        </div>
+                                    </div>
+                                    <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="viewOpportunity('construction-tender')">
+                                        <h4 class="font-medium text-gray-900">Provincial Tender</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Construction services</p>
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs">Tender</span>
+                                            <span class="ml-2">Due: April 15</span>
+                                        </div>
+                                    </div>
+                                    <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="viewOpportunity('pitch-competition')">
+                                        <h4 class="font-medium text-gray-900">Startup Pitch</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Innovation competition</p>
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Competition</span>
+                                            <span class="ml-2">Due: May 1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Plans Section -->
+            <div id="business-plan-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Business Plans</h1>
+                        <p class="mt-2 text-gray-600">Create and manage your business plans with our guided builder.</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <button onclick="showCreateBusinessPlan()" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                            + Create New Business Plan
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Tech Startup Plan</h3>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">85% Complete</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Mobile app development business targeting young entrepreneurs in South Africa.</p>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span>Executive Summary</span>
+                                    <span class="text-green-600">✓ Complete</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Market Analysis</span>
+                                    <span class="text-green-600">✓ Complete</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Financial Projections</span>
+                                    <span class="text-yellow-600">📝 In Progress</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Marketing Strategy</span>
+                                    <span class="text-gray-400">⭕ Pending</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="editBusinessPlan('tech-startup')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Continue Editing
+                                </button>
+                                <button onclick="previewBusinessPlan('tech-startup')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Restaurant Concept</h3>
+                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">60% Complete</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Local food delivery service specializing in traditional South African cuisine.</p>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span>Executive Summary</span>
+                                    <span class="text-green-600">✓ Complete</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Market Analysis</span>
+                                    <span class="text-yellow-600">📝 In Progress</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Financial Projections</span>
+                                    <span class="text-gray-400">⭕ Pending</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Marketing Strategy</span>
+                                    <span class="text-gray-400">⭕ Pending</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="editBusinessPlan('restaurant')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Continue Editing
+                                </button>
+                                <button onclick="previewBusinessPlan('restaurant')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Consulting Firm</h3>
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">30% Complete</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Business advisory and consulting services for small to medium enterprises.</p>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span>Executive Summary</span>
+                                    <span class="text-yellow-600">📝 In Progress</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Market Analysis</span>
+                                    <span class="text-gray-400">⭕ Pending</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Financial Projections</span>
+                                    <span class="text-gray-400">⭕ Pending</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Marketing Strategy</span>
+                                    <span class="text-gray-400">⭕ Pending</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="editBusinessPlan('consulting')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Continue Editing
+                                </button>
+                                <button onclick="previewBusinessPlan('consulting')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Funding Section -->
+            <div id="funding-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Funding Opportunities</h1>
+                        <p class="mt-2 text-gray-600">Discover grants, investments, and funding opportunities.</p>
+                    </div>
+
+                    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="funding-search" placeholder="Search opportunities..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onkeyup="searchFunding()">
+                        </div>
+                        <select id="funding-type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onchange="filterFunding()">
+                            <option value="">All Types</option>
+                            <option value="grant">Grants</option>
+                            <option value="loan">Loans</option>
+                            <option value="competition">Competitions</option>
+                            <option value="investment">Investment</option>
+                        </select>
+                        <select id="funding-province" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onchange="filterFunding()">
+                            <option value="">All Provinces</option>
+                            <option value="western-cape">Western Cape</option>
+                            <option value="gauteng">Gauteng</option>
+                            <option value="kwazulu-natal">KwaZulu-Natal</option>
+                            <option value="national">National</option>
+                        </select>
+                    </div>
+
+                    <div id="funding-results" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Funding opportunities will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tenders Section -->
+            <div id="tenders-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Government Tenders</h1>
+                        <p class="mt-2 text-gray-600">Browse and apply for government and corporate tender opportunities.</p>
+                    </div>
+
+                    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="tender-search" placeholder="Search tenders..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onkeyup="searchTenders()">
+                        </div>
+                        <select id="tender-category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onchange="filterTenders()">
+                            <option value="">All Categories</option>
+                            <option value="construction">Construction</option>
+                            <option value="it">IT Services</option>
+                            <option value="consulting">Consulting</option>
+                            <option value="supply">Supply & Maintenance</option>
+                        </select>
+                        <select id="tender-province" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onchange="filterTenders()">
+                            <option value="">All Provinces</option>
+                            <option value="western-cape">Western Cape</option>
+                            <option value="gauteng">Gauteng</option>
+                            <option value="kwazulu-natal">KwaZulu-Natal</option>
+                            <option value="eastern-cape">Eastern Cape</option>
+                        </select>
+                    </div>
+
+                    <div id="tender-results" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Tender opportunities will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Tender Process Help -->
+                    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="text-lg font-medium text-blue-900 mb-4">📋 Tender Application Process</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="text-center">
+                                <div class="text-3xl mb-2">1️⃣</div>
+                                <h4 class="font-medium text-blue-900">Research & Prepare</h4>
+                                <p class="text-sm text-blue-800 mt-1">Review requirements and gather documents</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2">2️⃣</div>
+                                <h4 class="font-medium text-blue-900">Submit Application</h4>
+                                <p class="text-sm text-blue-800 mt-1">Complete forms and upload documentation</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2">3️⃣</div>
+                                <h4 class="font-medium text-blue-900">Track & Follow Up</h4>
+                                <p class="text-sm text-blue-800 mt-1">Monitor status and respond to queries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications Section -->
+            <div id="applications-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">My Applications</h1>
+                        <p class="mt-2 text-gray-600">Track your funding applications and their status.</p>
+                    </div>
+
+                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-medium text-gray-900">Application History</h3>
+                        </div>
+                        <div class="divide-y divide-gray-200">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <h4 class="text-base font-medium text-gray-900">SEDA Youth Grant Program</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Applied for tech startup funding - R150,000</p>
+                                        <p class="text-xs text-gray-500 mt-1">Submitted: March 15, 2024</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">✅ Approved</span>
+                                        <button onclick="viewApplicationDetails('seda-grant')" class="text-primary hover:underline text-sm">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <h4 class="text-base font-medium text-gray-900">Provincial Construction Tender</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Construction services tender - R2.5M</p>
+                                        <p class="text-xs text-gray-500 mt-1">Submitted: March 10, 2024</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">⏳ Under Review</span>
+                                        <button onclick="viewApplicationDetails('construction-tender')" class="text-primary hover:underline text-sm">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <h4 class="text-base font-medium text-gray-900">SME Development Loan</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Business expansion loan - R500,000</p>
+                                        <p class="text-xs text-gray-500 mt-1">Submitted: February 28, 2024</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">❌ Declined</span>
+                                        <button onclick="viewApplicationDetails('sme-loan')" class="text-primary hover:underline text-sm">View Feedback</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <h4 class="text-base font-medium text-gray-900">Innovation Competition</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Startup pitch competition - R200,000 prize</p>
+                                        <p class="text-xs text-gray-500 mt-1">Submitted: March 20, 2024</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">📝 Draft</span>
+                                        <button onclick="continueApplication('innovation-comp')" class="text-primary hover:underline text-sm">Continue</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <h4 class="text-base font-medium text-gray-900">Women in Business Grant</h4>
+                                        <p class="text-sm text-gray-600 mt-1">Female entrepreneur support grant - R75,000</p>
+                                        <p class="text-xs text-gray-500 mt-1">Submitted: March 18, 2024</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">📋 Interview Scheduled</span>
+                                        <button onclick="viewApplicationDetails('women-grant')" class="text-primary hover:underline text-sm">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Section -->
+            <div id="templates-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Templates & Resources</h1>
+                        <p class="mt-2 text-gray-600">Download templates, guides, and resources to help your business succeed.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="text-3xl mb-4">📋</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Business Plan Template</h3>
+                            <p class="text-gray-600 text-sm mb-4">Comprehensive business plan template with all essential sections</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Word Doc</span>
+                                <button onclick="downloadTemplate('business-plan')" class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="text-3xl mb-4">💰</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Financial Projections</h3>
+                            <p class="text-gray-600 text-sm mb-4">Excel templates for 3-year financial forecasting</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Excel</span>
+                                <button onclick="downloadTemplate('financial-projections')" class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="text-3xl mb-4">📊</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Market Research Guide</h3>
+                            <p class="text-gray-600 text-sm mb-4">Step-by-step guide for conducting market analysis</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">PDF</span>
+                                <button onclick="downloadTemplate('market-research')" class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="text-3xl mb-4">🎯</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Pitch Deck Template</h3>
+                            <p class="text-gray-600 text-sm mb-4">Professional presentation template for investor pitches</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">PowerPoint</span>
+                                <button onclick="downloadTemplate('pitch-deck')" class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="text-3xl mb-4">📈</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Marketing Plan Template</h3>
+                            <p class="text-gray-600 text-sm mb-4">Complete marketing strategy and campaign planning</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Word Doc</span>
+                                <button onclick="downloadTemplate('marketing-plan')" class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="text-3xl mb-4">🏛️</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Tender Application Kit</h3>
+                            <p class="text-gray-600 text-sm mb-4">Complete guide and templates for tender applications</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">PDF + Word</span>
+                                <button onclick="downloadTemplate('tender-kit')" class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profile-section" class="section-content hidden">
+                <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Business Profile</h1>
+                        <p class="mt-2 text-gray-600">Manage your business information and setup.</p>
+                    </div>
+
+                    <form id="profile-form" class="bg-white shadow rounded-lg p-6">
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
+                                    <input type="text" id="business-name" value="TechStart Solutions" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                                    <select id="industry" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        <option value="technology" selected>Technology</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="education">Education</option>
+                                        <option value="finance">Finance</option>
+                                        <option value="retail">Retail</option>
+                                        <option value="manufacturing">Manufacturing</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Business Stage</label>
+                                    <select id="business-stage" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        <option value="idea">Idea Stage</option>
+                                        <option value="startup" selected>Startup</option>
+                                        <option value="growth">Growth</option>
+                                        <option value="established">Established</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Province</label>
+                                    <select id="province" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        <option value="western-cape" selected>Western Cape</option>
+                                        <option value="gauteng">Gauteng</option>
+                                        <option value="kwazulu-natal">KwaZulu-Natal</option>
+                                        <option value="eastern-cape">Eastern Cape</option>
+                                        <option value="free-state">Free State</option>
+                                        <option value="limpopo">Limpopo</option>
+                                        <option value="mpumalanga">Mpumalanga</option>
+                                        <option value="north-west">North West</option>
+                                        <option value="northern-cape">Northern Cape</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Business Description</label>
+                                <textarea id="business-description" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Describe your business...">Mobile app development company focused on creating innovative solutions for small businesses in South Africa. We specialize in custom mobile applications, web development, and digital transformation services.</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Funding Goals</label>
+                                <textarea id="funding-goals" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="What are your funding objectives?">Seeking R500,000 to expand development team and launch marketing campaign for new mobile platform targeting SMEs. Goals include hiring 3 additional developers and marketing specialist.</textarea>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="section-content hidden">
+                <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Settings</h1>
+                        <p class="mt-2 text-gray-600">Manage your account preferences and subscription.</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Account Settings -->
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Account Information</h3>
+                            <form id="account-form">
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                            <input type="text" id="full-name" value="John Doe" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                            <input type="email" id="email-address" value="john.doe@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                        Update Account
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Subscription -->
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Subscription Plan</h3>
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Free Plan</h4>
+                                    <p class="text-sm text-gray-600">3 business plans • Basic templates • Community support</p>
+                                </div>
+                                <button onclick="showUpgrade()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Upgrade
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Notification Preferences</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">Email Notifications</h4>
+                                        <p class="text-xs text-gray-600">Receive updates about new opportunities</p>
+                                    </div>
+                                    <input type="checkbox" id="email-notifications" checked class="rounded border-gray-300 text-primary focus:ring-primary">
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">Application Updates</h4>
+                                        <p class="text-xs text-gray-600">Get notified about application status changes</p>
+                                    </div>
+                                    <input type="checkbox" id="app-notifications" checked class="rounded border-gray-300 text-primary focus:ring-primary">
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">Marketing Emails</h4>
+                                        <p class="text-xs text-gray-600">Receive tips and best practices</p>
+                                    </div>
+                                    <input type="checkbox" id="marketing-notifications" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                </div>
+                                <button onclick="saveNotificationSettings()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Save Preferences
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Upgrade Modal -->
+    <div id="upgrade-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Upgrade Your Plan</h3>
+                <p class="text-gray-600 mb-6">Choose a plan that fits your business needs:</p>
+                
+                <div class="space-y-4">
+                    <div class="border border-primary rounded-lg p-4 bg-primary/5">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-gray-900">Pro Plan</h4>
+                            <span class="text-lg font-bold text-primary">R299/mo</span>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Unlimited business plans</li>
+                            <li>• Premium templates</li>
+                            <li>• Priority support</li>
+                            <li>• Expert consultations</li>
+                        </ul>
+                        <button onclick="selectPlan('pro')" class="w-full mt-3 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Choose Pro
+                        </button>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-gray-900">Expert Plan</h4>
+                            <span class="text-lg font-bold text-gray-900">R599/mo</span>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Everything in Pro</li>
+                            <li>• 1-on-1 mentorship</li>
+                            <li>• Custom templates</li>
+                            <li>• Funding guarantee program</li>
+                        </ul>
+                        <button onclick="selectPlan('expert')" class="w-full mt-3 bg-secondary text-dark px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors">
+                            Choose Expert
+                        </button>
+                    </div>
+                </div>
+                
+                <button onclick="closeUpgrade()" class="w-full mt-4 text-gray-600 hover:text-gray-900">
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic Modal -->
+    <div id="generic-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modal-title" class="text-lg font-bold text-gray-900">Modal Title</h3>
+                    <button onclick="closeGenericModal()" class="text-gray-500 hover:text-gray-700">
+                        <span class="text-2xl">×</span>
+                    </button>
+                </div>
+                <div id="modal-content" class="text-gray-600">
+                    <!-- Modal content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dummy data
+        const fundingOpportunities = [
+            {
+                id: 'seda-grant',
+                title: 'SEDA Youth Grant Program',
+                type: 'grant',
+                amount: 'R50,000 - R200,000',
+                province: 'national',
+                deadline: 'March 30, 2024',
+                description: 'Supporting young entrepreneurs aged 18-35 with funding for innovative business ideas.',
+                industry: 'Technology, Innovation',
+                location: 'National'
+            },
+            {
+                id: 'sme-loan',
+                title: 'SME Development Loan',
+                type: 'loan',
+                amount: 'R100,000 - R1M',
+                province: 'national',
+                deadline: 'Open Application',
+                description: 'Low-interest loans for small and medium enterprises looking to expand operations.',
+                industry: 'Any',
+                location: 'National'
+            },
+            {
+                id: 'pitch-competition',
+                title: 'Startup Pitch Competition',
+                type: 'competition',
+                amount: 'R500,000 + Mentorship',
+                province: 'western-cape',
+                deadline: 'May 1, 2024',
+                description: 'Annual startup pitch competition with cash prizes and mentorship opportunities.',
+                industry: 'Any',
+                location: 'Cape Town'
+            },
+            {
+                id: 'women-grant',
+                title: 'Women in Business Grant',
+                type: 'grant',
+                amount: 'R25,000 - R100,000',
+                province: 'gauteng',
+                deadline: 'April 20, 2024',
+                description: 'Supporting female entrepreneurs to start and grow their businesses.',
+                industry: 'Any',
+                location: 'Gauteng'
+            },
+            {
+                id: 'tech-fund',
+                title: 'Technology Innovation Fund',
+                type: 'investment',
+                amount: 'R500,000 - R5M',
+                province: 'western-cape',
+                deadline: 'June 15, 2024',
+                description: 'Investment fund focusing on innovative technology startups.',
+                industry: 'Technology',
+                location: 'Western Cape'
+            }
+        ];
+
+        const tenderOpportunities = [
+            {
+                id: 'construction-tender',
+                title: 'Provincial Construction Tender',
+                category: 'construction',
+                value: 'R2M - R10M',
+                province: 'western-cape',
+                deadline: 'April 15, 2024',
+                description: 'Construction and maintenance services for government buildings and infrastructure projects.',
+                department: 'Public Works',
+                requirements: 'CIDB Grade 6 or higher required'
+            },
+            {
+                id: 'it-tender',
+                title: 'IT Infrastructure Upgrade',
+                category: 'it',
+                value: 'R5M - R15M',
+                province: 'gauteng',
+                deadline: 'March 28, 2024',
+                description: 'Supply and installation of network infrastructure for municipal offices.',
+                department: 'IT Services',
+                requirements: 'BBBEE Level 4+'
+            },
+            {
+                id: 'consulting-tender',
+                title: 'Consulting Services',
+                category: 'consulting',
+                value: 'R1M - R5M',
+                province: 'kwazulu-natal',
+                deadline: 'May 10, 2024',
+                description: 'Management consulting and strategic planning services for municipal transformation.',
+                department: 'Strategic Planning',
+                requirements: '12 months duration'
+            },
+            {
+                id: 'supply-tender',
+                title: 'Medical Equipment Supply',
+                category: 'supply',
+                value: 'R3M - R8M',
+                province: 'eastern-cape',
+                deadline: 'April 30, 2024',
+                description: 'Supply of medical equipment and devices for public hospitals and clinics.',
+                department: 'Health',
+                requirements: 'ISO 13485 required'
+            }
+        ];
+
+        // Mobile menu functionality
+        document.getElementById('open-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.remove('hidden');
+        });
+
+        document.getElementById('close-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.add('hidden');
+        });
+
+        document.getElementById('mobile-menu-overlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.add('hidden');
+        });
+
+        // Navigation functionality
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section-content');
+            sections.forEach(section => section.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('bg-primary/10', 'text-primary');
+                link.classList.add('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
+            });
+            
+            // Set active nav link
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
+                activeLink.classList.add('bg-primary/10', 'text-primary');
+            }
+            
+            // Close mobile menu on selection
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.add('hidden');
+
+            // Initialize section-specific data
+            if (sectionName === 'funding') {
+                renderFundingOpportunities();
+            } else if (sectionName === 'tenders') {
+                renderTenderOpportunities();
+            }
+        }
+
+        // Utility functions
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 ${
+                type === 'success' ? 'bg-primary text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                'bg-blue-500 text-white'
+            }`;
+            
+            notification.classList.remove('translate-x-full');
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            document.getElementById('loading-overlay').classList.add('flex');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+            document.getElementById('loading-overlay').classList.remove('flex');
+        }
+
+        function simulateAsync(callback, delay = 1000) {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                callback();
+            }, delay);
+        }
+
+        // Business Plan functions
+        function showCreateBusinessPlan() {
+            const content = `
+                <form id="create-plan-form">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Business Plan Name</label>
+                            <input type="text" id="plan-name" placeholder="e.g., My Tech Startup" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Business Type</label>
+                            <select id="plan-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                                <option value="">Select business type</option>
+                                <option value="tech">Technology Startup</option>
+                                <option value="retail">Retail Business</option>
+                                <option value="service">Service Business</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="restaurant">Restaurant/Food</option>
+                                <option value="consulting">Consulting</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Funding Goal</label>
+                            <select id="funding-goal" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                                <option value="">Select funding amount</option>
+                                <option value="under-50k">Under R50,000</option>
+                                <option value="50k-200k">R50,000 - R200,000</option>
+                                <option value="200k-500k">R200,000 - R500,000</option>
+                                <option value="500k-1m">R500,000 - R1M</option>
+                                <option value="over-1m">Over R1M</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-3 pt-4">
+                            <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Create Business Plan
+                            </button>
+                            <button type="button" onclick="closeGenericModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            `;
+            
+            showModal('Create New Business Plan', content);
+            
+            document.getElementById('create-plan-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('plan-name').value;
+                const type = document.getElementById('plan-type').value;
+                const goal = document.getElementById('funding-goal').value;
+                
+                if (name && type && goal) {
+                    closeGenericModal();
+                    simulateAsync(() => {
+                        showNotification(`Business plan "${name}" created successfully!`);
+                        showSection('business-plan');
+                    });
+                }
+            });
+        }
+
+        function editBusinessPlan(planId) {
+            const plans = {
+                'tech-startup': {
+                    name: 'Tech Startup Plan',
+                    description: 'Mobile app development business',
+                    progress: 85
+                },
+                'restaurant': {
+                    name: 'Restaurant Concept',
+                    description: 'Local food delivery service',
+                    progress: 60
+                },
+                'consulting': {
+                    name: 'Consulting Firm',
+                    description: 'Business advisory services',
+                    progress: 30
+                }
+            };
+            
+            const plan = plans[planId];
+            const content = `
+                <div class="space-y-6">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-900">${plan.name}</h4>
+                        <p class="text-sm text-gray-600 mt-1">${plan.description}</p>
+                        <div class="mt-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progress</span>
+                                <span>${plan.progress}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: ${plan.progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="editSection('executive-summary')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Executive Summary</h5>
+                                    <p class="text-xs text-gray-600 mt-1">Company overview and mission</p>
+                                </div>
+                                <span class="text-green-600">✓</span>
+                            </div>
+                        </button>
+                        
+                        <button onclick="editSection('market-analysis')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Market Analysis</h5>
+                                    <p class="text-xs text-gray-600 mt-1">Target market and competition</p>
+                                </div>
+                                <span class="text-green-600">✓</span>
+                            </div>
+                        </button>
+                        
+                        <button onclick="editSection('financial-projections')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Financial Projections</h5>
+                                    <p class="text-xs text-gray-600 mt-1">Revenue and expense forecasts</p>
+                                </div>
+                                <span class="text-yellow-600">📝</span>
+                            </div>
+                        </button>
+                        
+                        <button onclick="editSection('marketing-strategy')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Marketing Strategy</h5>
+                                    <p class="text-xs text-gray-600 mt-1">Customer acquisition plan</p>
+                                </div>
+                                <span class="text-gray-400">⭕</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4">
+                        <button onclick="generatePDF()" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Generate PDF
+                        </button>
+                        <button onclick="shareBusinessPlan()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Share
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(`Edit ${plan.name}`, content);
+        }
+
+        function editSection(sectionName) {
+            closeGenericModal();
+            simulateAsync(() => {
+                showNotification(`Opening ${sectionName.replace('-', ' ')} editor...`);
+            });
+        }
+
+        function previewBusinessPlan(planId) {
+            simulateAsync(() => {
+                showNotification('Opening business plan preview...');
+            });
+        }
+
+        function generatePDF() {
+            closeGenericModal();
+            simulateAsync(() => {
+                showNotification('PDF generated successfully! Check your downloads.');
+            });
+        }
+
+        function shareBusinessPlan() {
+            closeGenericModal();
+            simulateAsync(() => {
+                showNotification('Share link copied to clipboard!');
+            });
+        }
+
+        // Funding functions
+        function renderFundingOpportunities() {
+            const container = document.getElementById('funding-results');
+            container.innerHTML = fundingOpportunities.map(opportunity => `
+                <div class="bg-white shadow rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">${opportunity.title}</h3>
+                            <span class="bg-${getTypeColor(opportunity.type)}-100 text-${getTypeColor(opportunity.type)}-800 px-3 py-1 rounded-full text-sm">${opportunity.type}</span>
+                        </div>
+                        <span class="text-sm text-gray-500">Due: ${opportunity.deadline}</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">${opportunity.description}</p>
+                    <div class="space-y-2 mb-4 text-sm">
+                        <div><strong>Amount:</strong> ${opportunity.amount}</div>
+                        <div><strong>Industry:</strong> ${opportunity.industry}</div>
+                        <div><strong>Location:</strong> ${opportunity.location}</div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="applyForFunding('${opportunity.id}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Apply Now
+                        </button>
+                        <button onclick="viewOpportunity('${opportunity.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            More Info
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchFunding() {
+            // Simulate search functionality
+            showNotification('Searching funding opportunities...');
+        }
+
+        function filterFunding() {
+            // Simulate filter functionality
+            showNotification('Applying filters...');
+            renderFundingOpportunities();
+        }
+
+        function getTypeColor(type) {
+            const colors = {
+                'grant': 'blue',
+                'loan': 'orange',
+                'competition': 'green',
+                'investment': 'purple'
+            };
+            return colors[type] || 'gray';
+        }
+
+        function applyForFunding(opportunityId) {
+            const opportunity = fundingOpportunities.find(o => o.id === opportunityId);
+            const content = `
+                <form id="funding-application-form">
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-blue-900">${opportunity.title}</h4>
+                            <p class="text-sm text-blue-800 mt-1">${opportunity.amount} • ${opportunity.location}</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Business Plan</label>
+                            <select id="selected-plan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                                <option value="">Select business plan</option>
+                                <option value="tech-startup">Tech Startup Plan</option>
+                                <option value="restaurant">Restaurant Concept</option>
+                                <option value="consulting">Consulting Firm</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Requested Amount</label>
+                            <input type="text" id="requested-amount" placeholder="e.g., R150,000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Why do you need this funding?</label>
+                            <textarea id="funding-reason" rows="3" placeholder="Describe how you'll use the funds..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required></textarea>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="agree-terms" class="rounded border-gray-300 text-primary focus:ring-primary" required>
+                            <label for="agree-terms" class="ml-2 text-sm text-gray-600">I agree to the terms and conditions</label>
+                        </div>
+                        
+                        <div class="flex space-x-3 pt-4">
+                            <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Submit Application
+                            </button>
+                            <button type="button" onclick="closeGenericModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            `;
+            
+            showModal(`Apply for ${opportunity.title}`, content);
+            
+            document.getElementById('funding-application-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                closeGenericModal();
+                simulateAsync(() => {
+                    showNotification('Application submitted successfully!');
+                    showSection('applications');
+                });
+            });
+        }
+
+        function viewOpportunity(opportunityId) {
+            const opportunity = fundingOpportunities.find(o => o.id === opportunityId);
+            const content = `
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-blue-900">${opportunity.title}</h4>
+                        <span class="bg-${getTypeColor(opportunity.type)}-100 text-${getTypeColor(opportunity.type)}-800 px-2 py-1 rounded-full text-xs">${opportunity.type}</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <strong>Amount:</strong> ${opportunity.amount}
+                        </div>
+                        <div>
+                            <strong>Deadline:</strong> ${opportunity.deadline}
+                        </div>
+                        <div>
+                            <strong>Industry:</strong> ${opportunity.industry}
+                        </div>
+                        <div>
+                            <strong>Location:</strong> ${opportunity.location}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-medium text-gray-900 mb-2">Description</h5>
+                        <p class="text-gray-600">${opportunity.description}</p>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-medium text-gray-900 mb-2">Eligibility Requirements</h5>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• South African citizen or permanent resident</li>
+                            <li>• Business registered in South Africa</li>
+                            <li>• Complete business plan required</li>
+                            <li>• Proof of business registration</li>
+                            <li>• Financial statements (if applicable)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4">
+                        <button onclick="applyForFunding('${opportunity.id}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Apply Now
+                        </button>
+                        <button onclick="bookmarkOpportunity('${opportunity.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Bookmark
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(opportunity.title, content);
+        }
+
+        function bookmarkOpportunity(opportunityId) {
+            closeGenericModal();
+            showNotification('Opportunity bookmarked!');
+        }
+
+        // Tender functions
+        function renderTenderOpportunities() {
+            const container = document.getElementById('tender-results');
+            container.innerHTML = tenderOpportunities.map(tender => `
+                <div class="bg-white shadow rounded-lg p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">${tender.title}</h3>
+                            <span class="bg-${getCategoryColor(tender.category)}-100 text-${getCategoryColor(tender.category)}-800 px-3 py-1 rounded-full text-sm">${tender.category}</span>
+                        </div>
+                        <span class="text-sm text-gray-500">Due: ${tender.deadline}</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">${tender.description}</p>
+                    <div class="space-y-2 mb-4 text-sm">
+                        <div><strong>Value:</strong> ${tender.value}</div>
+                        <div><strong>Department:</strong> ${tender.department}</div>
+                        <div><strong>Location:</strong> ${tender.province}</div>
+                        <div><strong>Requirements:</strong> ${tender.requirements}</div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="applyForTender('${tender.id}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Apply Now
+                        </button>
+                        <button onclick="downloadTenderBrief('${tender.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Download Brief
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchTenders() {
+            showNotification('Searching tenders...');
+        }
+
+        function filterTenders() {
+            showNotification('Applying filters...');
+            renderTenderOpportunities();
+        }
+
+        function getCategoryColor(category) {
+            const colors = {
+                'construction': 'purple',
+                'it': 'blue',
+                'consulting': 'green',
+                'supply': 'red'
+            };
+            return colors[category] || 'gray';
+        }
+
+        function applyForTender(tenderId) {
+            const tender = tenderOpportunities.find(t => t.id === tenderId);
+            const content = `
+                <form id="tender-application-form">
+                    <div class="space-y-4">
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-purple-900">${tender.title}</h4>
+                            <p class="text-sm text-purple-800 mt-1">${tender.value} • ${tender.department}</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                            <input type="text" id="company-name" value="TechStart Solutions" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">CIDB Registration</label>
+                                <input type="text" id="cidb-reg" placeholder="CIDB-12345" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">BBBEE Level</label>
+                                <select id="bbbee-level" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                    <option value="">Select level</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                    <option value="4">Level 4</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tender Response Summary</label>
+                            <textarea id="tender-response" rows="3" placeholder="Describe your approach and qualifications..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Supporting Documents</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                                <p class="text-sm text-gray-600">Click to upload documents or drag and drop</p>
+                                <p class="text-xs text-gray-500 mt-1">Company registration, tax certificates, etc.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-3 pt-4">
+                            <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Submit Tender Application
+                            </button>
+                            <button type="button" onclick="closeGenericModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            `;
+            
+            showModal(`Apply for ${tender.title}`, content);
+            
+            document.getElementById('tender-application-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                closeGenericModal();
+                simulateAsync(() => {
+                    showNotification('Tender application submitted successfully!');
+                    showSection('applications');
+                }, 1500);
+            });
+        }
+
+        function downloadTenderBrief(tenderId) {
+            simulateAsync(() => {
+                showNotification('Tender brief downloaded successfully!');
+            });
+        }
+
+        // Application functions
+        function viewApplicationDetails(applicationId) {
+            const applications = {
+                'seda-grant': {
+                    title: 'SEDA Youth Grant Program',
+                    status: 'Approved',
+                    amount: 'R150,000',
+                    submitted: 'March 15, 2024',
+                    notes: 'Congratulations! Your application has been approved. Funds will be disbursed within 5 business days.'
+                },
+                'construction-tender': {
+                    title: 'Provincial Construction Tender',
+                    status: 'Under Review',
+                    amount: 'R2,500,000',
+                    submitted: 'March 10, 2024',
+                    notes: 'Your application is currently being reviewed by the technical committee. Expected decision by April 1st.'
+                },
+                'sme-loan': {
+                    title: 'SME Development Loan',
+                    status: 'Declined',
+                    amount: 'R500,000',
+                    submitted: 'February 28, 2024',
+                    notes: 'Application declined due to insufficient collateral. Consider reapplying with additional security.'
+                },
+                'women-grant': {
+                    title: 'Women in Business Grant',
+                    status: 'Interview Scheduled',
+                    amount: 'R75,000',
+                    submitted: 'March 18, 2024',
+                    notes: 'Interview scheduled for March 30th at 2:00 PM. Please bring all supporting documents.'
+                }
+            };
+            
+            const app = applications[applicationId];
+            const content = `
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-900">${app.title}</h4>
+                        <div class="mt-2 grid grid-cols-2 gap-4 text-sm">
+                            <div><strong>Status:</strong> ${app.status}</div>
+                            <div><strong>Amount:</strong> ${app.amount}</div>
+                            <div><strong>Submitted:</strong> ${app.submitted}</div>
+                            <div><strong>Reference:</strong> #${applicationId.toUpperCase()}-2024</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-medium text-gray-900 mb-2">Application Notes</h5>
+                        <p class="text-gray-600">${app.notes}</p>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-medium text-gray-900 mb-2">Documents Submitted</h5>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>✓ Business Plan</li>
+                            <li>✓ Company Registration</li>
+                            <li>✓ Tax Clearance Certificate</li>
+                            <li>✓ Bank Statements</li>
+                            <li>✓ ID Document</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4">
+                        <button onclick="downloadApplicationPDF()" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Download PDF
+                        </button>
+                        <button onclick="contactSupport()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Contact Support
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(`Application Details`, content);
+        }
+
+        function continueApplication(applicationId) {
+            simulateAsync(() => {
+                showNotification('Opening application editor...');
+            });
+        }
+
+        function downloadApplicationPDF() {
+            closeGenericModal();
+            simulateAsync(() => {
+                showNotification('Application PDF downloaded!');
+            });
+        }
+
+        function contactSupport() {
+            closeGenericModal();
+            simulateAsync(() => {
+                showNotification('Support ticket created. You will receive an email shortly.');
+            });
+        }
+
+        // Template functions
+        function downloadTemplate(templateId) {
+            const templates = {
+                'business-plan': 'Business Plan Template.docx',
+                'financial-projections': 'Financial Projections.xlsx',
+                'market-research': 'Market Research Guide.pdf',
+                'pitch-deck': 'Pitch Deck Template.pptx',
+                'marketing-plan': 'Marketing Plan Template.docx',
+                'tender-kit': 'Tender Application Kit.zip'
+            };
+            
+            const filename = templates[templateId];
+            simulateAsync(() => {
+                showNotification(`${filename} downloaded successfully!`);
+            });
+        }
+
+        // Profile and Settings functions
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            simulateAsync(() => {
+                showNotification('Business profile updated successfully!');
+            });
+        });
+
+        document.getElementById('account-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            simulateAsync(() => {
+                showNotification('Account information updated!');
+            });
+        });
+
+        function saveNotificationSettings() {
+            simulateAsync(() => {
+                showNotification('Notification preferences saved!');
+            });
+        }
+
+        // Upgrade functions
+        function showUpgrade() {
+            document.getElementById('upgrade-modal').classList.remove('hidden');
+        }
+
+        function closeUpgrade() {
+            document.getElementById('upgrade-modal').classList.add('hidden');
+        }
+
+        function selectPlan(plan) {
+            alert(`Demo: You selected the ${plan.charAt(0).toUpperCase() + plan.slice(1)} plan! In the real app, this would redirect to payment processing.`);
+            closeUpgrade();
+        }
+
+        // Modal functions
+        function showModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('generic-modal').classList.remove('hidden');
+        }
+
+        function closeGenericModal() {
+            document.getElementById('generic-modal').classList.add('hidden');
+        }
+
+        // Other functions
+        function showTasks() {
+            const content = `
+                <div class="space-y-4">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">✅</div>
+                        <h4 class="text-lg font-medium text-gray-900">18 Tasks Completed!</h4>
+                        <p class="text-gray-600 mt-2">You're making great progress on your funding journey.</p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                            <span class="text-green-600 mr-3">✅</span>
+                            <span class="text-sm">Completed business profile setup</span>
+                        </div>
+                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                            <span class="text-green-600 mr-3">✅</span>
+                            <span class="text-sm">Created first business plan</span>
+                        </div>
+                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                            <span class="text-green-600 mr-3">✅</span>
+                            <span class="text-sm">Applied for SEDA Grant</span>
+                        </div>
+                        <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                            <span class="text-yellow-600 mr-3">📝</span>
+                            <span class="text-sm">Complete financial projections</span>
+                        </div>
+                        <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                            <span class="text-blue-600 mr-3">📋</span>
+                            <span class="text-sm">Submit tender application</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            showModal('Task Progress', content);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                simulateAsync(() => {
+                    showNotification('Logged out successfully!');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                });
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('overview');
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('Welcome back! All dashboard features are now fully functional.');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

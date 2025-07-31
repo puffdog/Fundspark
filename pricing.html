@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - FundSpark</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#28a745',
+                        secondary: '#fcd500',
+                        dark: '#1a1a1a'
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'wiggle': 'wiggle 1s ease-in-out infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(1deg); }
+            50% { transform: translateY(-15px) rotate(-1deg); }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(40, 167, 69, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(40, 167, 69, 0.6); }
+        }
+        @keyframes wiggle {
+            0%, 7% { transform: rotateZ(0); }
+            15% { transform: rotateZ(-15deg); }
+            20% { transform: rotateZ(10deg); }
+            25% { transform: rotateZ(-10deg); }
+            30% { transform: rotateZ(6deg); }
+            35% { transform: rotateZ(-4deg); }
+            40%, 100% { transform: rotateZ(0); }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #28a745, #fcd500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .button-modern {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .button-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .button-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        .button-modern:hover::before {
+            left: 100%;
+        }
+        .pricing-card {
+            transition: all 0.4s ease;
+        }
+        .pricing-card:hover {
+            transform: translateY(-12px) scale(1.02);
+        }
+        .popular-badge {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="font-poppins bg-white overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-lg shadow-lg fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html">
+                        <img src="./ipe029mj6f.jpg" alt="FundSpark Logo" class="h-8 w-auto transition-transform duration-300 hover:scale-110">
+                    </a>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="index.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Home</a>
+                        <a href="how-it-works.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">How It Works</a>
+                        <a href="about.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">About</a>
+                        <a href="pricing.html" class="text-primary bg-primary/10 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Pricing</a>
+                        <a href="resources.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Resources</a>
+                        <a href="/auth/signup" class="bg-gradient-to-r from-primary to-green-600 text-white px-5 py-2 rounded-lg button-modern font-medium text-sm inline-block">Start Free Trial</a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-dark hover:text-primary focus:outline-none transition-colors duration-200">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/95 backdrop-blur-lg border-t rounded-b-lg">
+                    <a href="index.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">Home</a>
+                    <a href="how-it-works.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">How It Works</a>
+                    <a href="about.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">About</a>
+                    <a href="pricing.html" class="text-primary bg-primary/10 block px-3 py-2 text-base font-medium rounded-lg">Pricing</a>
+                    <a href="resources.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">Resources</a>
+                    <a href="/auth/signup" class="bg-gradient-to-r from-primary to-green-600 text-white px-5 py-2 rounded-lg w-full mt-4 button-modern font-medium text-sm inline-block text-center">Start Free Trial</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PRICING PAGE -->
+    <section class="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-50 pt-32 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-8 leading-tight">
+                    Choose Your Path to <span class="gradient-text">Success</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Start free and scale as you grow. Every plan includes our core tools — pay only for premium features that accelerate your journey.
+                </p>
+            </div>
+
+            <!-- Pricing Toggle -->
+            <div class="flex justify-center mb-16" data-aos="fade-up" data-aos-delay="100">
+                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-2 shadow-lg border border-gray-200">
+                    <div class="flex">
+                        <button id="monthly-btn" class="px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-primary to-green-600 text-white">Monthly</button>
+                        <button id="annual-btn" class="px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 text-gray-600 hover:text-primary">Annual (Save 20%)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                <!-- Free Plan -->
+                <div class="pricing-card bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-gray-200 relative" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-6">
+                            <span class="text-3xl">🌱</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark mb-4">Free</h3>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold text-dark">R0</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">Perfect for exploring ideas and testing the waters</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center">✓</span>
+                            <span class="text-gray-700">Basic business plan template</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center">✓</span>
+                            <span class="text-gray-700">Access to 50+ funding opportunities</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center">✓</span>
+                            <span class="text-gray-700">Email notifications</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-gray-400">✗</span>
+                            <span class="text-gray-400">AI-powered suggestions</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-gray-400">✗</span>
+                            <span class="text-gray-400">WhatsApp reminders</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-gray-400">✗</span>
+                            <span class="text-gray-400">Priority support</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="/auth/signup" class="w-full bg-gradient-to-r from-gray-100 to-gray-200 text-dark px-6 py-3 rounded-xl button-modern font-semibold inline-block text-center">Get Started Free</a>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="pricing-card bg-white/90 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border-2 border-primary relative transform scale-105" data-aos="fade-up" data-aos-delay="300">
+                    <!-- Popular Badge -->
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <div class="bg-gradient-to-r from-primary to-green-600 text-white px-6 py-2 rounded-full text-sm font-bold popular-badge">
+                            🔥 Most Popular
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-8 mt-4">
+                        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mb-6">
+                            <span class="text-3xl">🚀</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark mb-4">Pro</h3>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold gradient-text monthly-price">R299</span>
+                            <span class="text-5xl font-bold gradient-text annual-price hidden">R239</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">For serious entrepreneurs ready to scale</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">✓</span>
+                            <span class="text-gray-700 font-medium">Everything in Free, plus:</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">✓</span>
+                            <span class="text-gray-700">AI-powered business plan builder</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">✓</span>
+                            <span class="text-gray-700">Access to ALL 500+ funding sources</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">✓</span>
+                            <span class="text-gray-700">WhatsApp deadline reminders</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">✓</span>
+                            <span class="text-gray-700">Auto-fill application forms</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">✓</span>
+                            <span class="text-gray-700">Priority email support</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="signup-pro.html" class="w-full bg-gradient-to-r from-primary to-green-600 text-white px-6 py-3 rounded-xl button-modern font-semibold animate-glow inline-block text-center">Start Pro Trial</a>
+                </div>
+
+                <!-- Expert Plan -->
+                <div class="pricing-card bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-gray-200 relative" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-secondary/20 to-secondary/30 rounded-2xl flex items-center justify-center mb-6">
+                            <span class="text-3xl">👑</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark mb-4">Expert</h3>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold gradient-text monthly-price">R799</span>
+                            <span class="text-5xl font-bold gradient-text annual-price hidden">R639</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">For businesses scaling rapidly and need expert guidance</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-dark text-sm font-bold">✓</span>
+                            <span class="text-gray-700 font-medium">Everything in Pro, plus:</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-dark text-sm font-bold">✓</span>
+                            <span class="text-gray-700">Monthly 1-on-1 consultant calls</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-dark text-sm font-bold">✓</span>
+                            <span class="text-gray-700">Custom funding strategy</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-dark text-sm font-bold">✓</span>
+                            <span class="text-gray-700">Application review & optimization</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-dark text-sm font-bold">✓</span>
+                            <span class="text-gray-700">Premium templates & resources</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-dark text-sm font-bold">✓</span>
+                            <span class="text-gray-700">24/7 priority support</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="signup-expert.html" class="w-full bg-gradient-to-r from-secondary to-yellow-400 text-dark px-6 py-3 rounded-xl button-modern font-semibold inline-block text-center">Start Expert Trial</a>
+                </div>
+            </div>
+
+            <!-- Money Back Guarantee -->
+            <div class="text-center mb-20" data-aos="fade-up" data-aos-delay="500">
+                <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-3xl p-8 md:p-12 border border-green-200">
+                    <div class="text-6xl mb-6 animate-wiggle">💚</div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">30-Day Money-Back Guarantee</h3>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                        Try FundSpark risk-free. If you don't secure at least one funding opportunity lead within 30 days, we'll refund your entire payment.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="bg-white/70 backdrop-blur-lg rounded-3xl p-10 md:p-16 shadow-xl border border-white/20" data-aos="fade-up" data-aos-delay="600">
+                <h3 class="text-3xl font-bold text-dark mb-12 text-center">Frequently Asked Questions</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-8">
+                        <div class="group">
+                            <h4 class="font-bold text-dark mb-3 text-lg group-hover:text-primary transition-colors duration-200">Can I cancel anytime?</h4>
+                            <p class="text-gray-600 leading-relaxed">Yes! Cancel your subscription anytime with one click. No contracts, no cancellation fees.</p>
+                        </div>
+                        <div class="group">
+                            <h4 class="font-bold text-dark mb-3 text-lg group-hover:text-primary transition-colors duration-200">Do you offer discounts for students?</h4>
+                            <p class="text-gray-600 leading-relaxed">Yes! Students get 50% off Pro and Expert plans. Contact support with your student ID.</p>
+                        </div>
+                        <div class="group">
+                            <h4 class="font-bold text-dark mb-3 text-lg group-hover:text-primary transition-colors duration-200">What payment methods do you accept?</h4>
+                            <p class="text-gray-600 leading-relaxed">We accept all major credit cards, EFT, and mobile payments including SnapScan.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="group">
+                            <h4 class="font-bold text-dark mb-3 text-lg group-hover:text-primary transition-colors duration-200">Can I upgrade or downgrade my plan?</h4>
+                            <p class="text-gray-600 leading-relaxed">Absolutely! Change your plan anytime. We'll prorate the charges automatically.</p>
+                        </div>
+                        <div class="group">
+                            <h4 class="font-bold text-dark mb-3 text-lg group-hover:text-primary transition-colors duration-200">Is my data secure?</h4>
+                            <p class="text-gray-600 leading-relaxed">Your data is encrypted and stored securely. We never share your information with third parties.</p>
+                        </div>
+                        <div class="group">
+                            <h4 class="font-bold text-dark mb-3 text-lg group-hover:text-primary transition-colors duration-200">Do you offer custom enterprise plans?</h4>
+                            <p class="text-gray-600 leading-relaxed">Yes! Contact our sales team for custom pricing for organizations with 10+ users.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final CTA -->
+            <div class="text-center mt-20" data-aos="fade-up" data-aos-delay="700">
+                <h3 class="text-3xl font-bold text-dark mb-6">Still not sure? Start free!</h3>
+                <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                    Experience the power of FundSpark with our free plan. Upgrade only when you're ready to accelerate.
+                </p>
+                <a href="signup.html" class="bg-gradient-to-r from-primary to-green-600 text-white px-10 py-4 rounded-xl button-modern font-bold text-lg inline-flex items-center gap-3 animate-glow">
+                    <span>🚀</span>
+                    Start Your Free Account
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-dark to-gray-900 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12" data-aos="fade-up">
+                <div class="md:col-span-2">
+                    <img src="./ipe029mj6f.jpg" alt="FundSpark Logo" class="h-12 w-auto mb-8 filter brightness-0 invert opacity-90">
+                    <p class="text-gray-300 mb-8 max-w-md leading-relaxed">
+                        Empowering South African entrepreneurs with smart funding tools and business planning solutions.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="mailto:info@fundspark.co.za" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Email us">📧</a>
+                        <a href="tel:+27123456789" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Call us">📱</a>
+                        <a href="/dashboard" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Visit dashboard">🌐</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Platform</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="index.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Home</a></li>
+                        <li><a href="how-it-works.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">How It Works</a></li>
+                        <li><a href="pricing.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Pricing</a></li>
+                        <li><a href="resources.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Resources</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Support</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="/dashboard" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Help Center</a></li>
+                        <li><a href="mailto:support@fundspark.co.za" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Contact Us</a></li>
+                        <li><span class="text-gray-500 cursor-not-allowed">Privacy Policy</span></li>
+                        <li><span class="text-gray-500 cursor-not-allowed">Terms of Service</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-16 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2025 FundSpark by Vetma Consultants. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 50
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Enhanced navigation scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('shadow-xl', 'bg-white/95');
+            } else {
+                nav.classList.remove('shadow-xl', 'bg-white/95');
+            }
+        });
+
+        // Pricing toggle functionality
+        const monthlyBtn = document.getElementById('monthly-btn');
+        const annualBtn = document.getElementById('annual-btn');
+        const monthlyPrices = document.querySelectorAll('.monthly-price');
+        const annualPrices = document.querySelectorAll('.annual-price');
+
+        monthlyBtn.addEventListener('click', () => {
+            monthlyBtn.classList.add('bg-gradient-to-r', 'from-primary', 'to-green-600', 'text-white');
+            monthlyBtn.classList.remove('text-gray-600', 'hover:text-primary');
+            annualBtn.classList.remove('bg-gradient-to-r', 'from-primary', 'to-green-600', 'text-white');
+            annualBtn.classList.add('text-gray-600', 'hover:text-primary');
+            
+            monthlyPrices.forEach(price => price.classList.remove('hidden'));
+            annualPrices.forEach(price => price.classList.add('hidden'));
+        });
+
+        annualBtn.addEventListener('click', () => {
+            annualBtn.classList.add('bg-gradient-to-r', 'from-primary', 'to-green-600', 'text-white');
+            annualBtn.classList.remove('text-gray-600', 'hover:text-primary');
+            monthlyBtn.classList.remove('bg-gradient-to-r', 'from-primary', 'to-green-600', 'text-white');
+            monthlyBtn.classList.add('text-gray-600', 'hover:text-primary');
+            
+            monthlyPrices.forEach(price => price.classList.add('hidden'));
+            annualPrices.forEach(price => price.classList.remove('hidden'));
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.animate-float');
+            parallaxElements.forEach((el, index) => {
+                const speed = scrolled * (0.1 + index * 0.05);
+                el.style.transform = `translateY(${speed}px) rotate(${Math.sin(scrolled * 0.01) * 2}deg)`;
+            });
+        });
+    </script>
+</body>
+</html>

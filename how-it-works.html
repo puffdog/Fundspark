@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - FundSpark</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#28a745',
+                        secondary: '#fcd500',
+                        dark: '#1a1a1a'
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif']
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(40, 167, 69, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(40, 167, 69, 0.6); }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #28a745, #fcd500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .button-modern {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .button-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .button-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        .button-modern:hover::before {
+            left: 100%;
+        }
+        .step-connector {
+            position: relative;
+        }
+        .step-connector::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(180deg, #28a745, #fcd500);
+            transform: translateX(-50%);
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="font-poppins bg-white overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-lg shadow-lg fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html">
+                        <img src="./ipe029mj6f.jpg" alt="FundSpark Logo" class="h-8 w-auto transition-transform duration-300 hover:scale-110">
+                    </a>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="index.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Home</a>
+                        <a href="how-it-works.html" class="text-primary bg-primary/10 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">How It Works</a>
+                        <a href="about.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">About</a>
+                        <a href="pricing.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Pricing</a>
+                        <a href="resources.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Resources</a>
+                        <a href="/auth/signup" class="bg-gradient-to-r from-primary to-green-600 text-white px-5 py-2 rounded-lg button-modern font-medium text-sm inline-block">Start Free Trial</a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-dark hover:text-primary focus:outline-none transition-colors duration-200">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/95 backdrop-blur-lg border-t rounded-b-lg">
+                    <a href="index.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">Home</a>
+                    <a href="how-it-works.html" class="text-primary bg-primary/10 block px-3 py-2 text-base font-medium rounded-lg">How It Works</a>
+                    <a href="about.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">About</a>
+                    <a href="pricing.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">Pricing</a>
+                    <a href="resources.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">Resources</a>
+                    <a href="/auth/signup" class="bg-gradient-to-r from-primary to-green-600 text-white px-5 py-2 rounded-lg w-full mt-4 button-modern font-medium text-sm inline-block text-center">Start Free Trial</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOW IT WORKS PAGE -->
+    <section class="py-24 bg-gradient-to-br from-white via-gray-50 to-white pt-32 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-8">
+                    How FundSpark Works in <span class="gradient-text">5 Simple Steps</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    From signup to successful funding application in minutes, not months. Here's exactly how we help you succeed.
+                </p>
+            </div>
+
+            <div class="relative">
+                <!-- Steps -->
+                <div class="space-y-24">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col lg:flex-row items-center gap-16 step-connector" data-aos="fade-up" data-aos-delay="100">
+                        <div class="lg:w-1/2">
+                            <div class="flex items-center mb-8">
+                                <div class="bg-gradient-to-r from-primary to-green-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl mr-6 animate-pulse">1</div>
+                                <h3 class="text-3xl font-bold text-dark">Sign Up Free</h3>
+                            </div>
+                            <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                                Getting started takes less than 2 minutes. Just your name, email, and password. No credit card required, no complicated forms.
+                            </p>
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
+                                <p class="text-sm text-gray-500 mb-4 font-semibold">What you need:</p>
+                                <ul class="text-sm text-dark space-y-2">
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-primary rounded-full"></span>
+                                        Valid email address
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-primary rounded-full"></span>
+                                        Strong password
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-primary rounded-full"></span>
+                                        2 minutes of your time
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2" data-aos="fade-left" data-aos-delay="200">
+                            <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl p-8 animate-float">
+                                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/50">
+                                    <div class="text-center mb-6">
+                                        <span class="text-4xl animate-bounce-slow">🚀</span>
+                                        <h4 class="font-bold text-lg mt-4">Quick Signup</h4>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <input type="text" placeholder="Your Name" class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300" disabled>
+                                        <input type="email" placeholder="Email Address" class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300" disabled>
+                                        <input type="password" placeholder="Password" class="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300" disabled>
+                                        <button class="w-full bg-gradient-to-r from-primary to-green-600 text-white p-4 rounded-xl font-semibold button-modern" disabled>Create Account</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex flex-col lg:flex-row-reverse items-center gap-16 step-connector" data-aos="fade-up" data-aos-delay="200">
+                        <div class="lg:w-1/2">
+                            <div class="flex items-center mb-8">
+                                <div class="bg-gradient-to-r from-secondary to-yellow-400 text-dark w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl mr-6 animate-pulse">2</div>
+                                <h3 class="text-3xl font-bold text-dark">Create Your Business Profile</h3>
+                            </div>
+                            <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                                Answer 5 smart questions about your business idea. Our AI helps you articulate your vision and identifies the best funding opportunities for your specific situation.
+                            </p>
+                            <div class="bg-gradient-to-br from-secondary/10 to-secondary/20 rounded-2xl p-6 border border-yellow-200">
+                                <p class="text-sm text-gray-500 mb-4 font-semibold">Smart questions include:</p>
+                                <ul class="text-sm text-dark space-y-2">
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-secondary rounded-full"></span>
+                                        What problem does your business solve?
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-secondary rounded-full"></span>
+                                        Who are your target customers?
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-secondary rounded-full"></span>
+                                        Where are you located?
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-secondary rounded-full"></span>
+                                        What industry are you in?
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-secondary rounded-full"></span>
+                                        What stage is your business?
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2" data-aos="fade-right" data-aos-delay="300">
+                            <div class="bg-gradient-to-br from-secondary/10 to-primary/10 rounded-3xl p-8 animate-float">
+                                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/50">
+                                    <div class="text-center mb-6">
+                                        <span class="text-4xl animate-bounce-slow">👤</span>
+                                        <h4 class="font-bold text-lg mt-4">Business Profile</h4>
+                                    </div>
+                                    <div class="space-y-5">
+                                        <div>
+                                            <label class="text-sm font-medium text-gray-600 block mb-2">Business Name</label>
+                                            <input type="text" placeholder="Your Business Name" class="w-full p-3 border border-gray-200 rounded-xl" disabled>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm font-medium text-gray-600 block mb-2">Industry</label>
+                                            <select class="w-full p-3 border border-gray-200 rounded-xl" disabled>
+                                                <option>Technology</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm font-medium text-gray-600 block mb-2">Location</label>
+                                            <select class="w-full p-3 border border-gray-200 rounded-xl" disabled>
+                                                <option>Gauteng</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex flex-col lg:flex-row items-center gap-16 step-connector" data-aos="fade-up" data-aos-delay="300">
+                        <div class="lg:w-1/2">
+                            <div class="flex items-center mb-8">
+                                <div class="bg-gradient-to-r from-primary to-green-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl mr-6 animate-pulse">3</div>
+                                <h3 class="text-3xl font-bold text-dark">Build Your Business Plan</h3>
+                            </div>
+                            <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                                Our guided builder walks you through each section with helpful prompts and examples. Get professional suggestions and templates that have helped thousands of entrepreneurs.
+                            </p>
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+                                <p class="text-sm text-gray-500 mb-4 font-semibold">Plan includes:</p>
+                                <ul class="text-sm text-dark space-y-2">
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        Executive Summary
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        Market Analysis
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        Financial Projections
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        Marketing Strategy
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        Operations Plan
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2" data-aos="fade-left" data-aos-delay="400">
+                            <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8 animate-float">
+                                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/50">
+                                    <div class="text-center mb-6">
+                                        <span class="text-4xl animate-bounce-slow">📋</span>
+                                        <h4 class="font-bold text-lg mt-4">Business Plan Builder</h4>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between items-center p-4 bg-green-50 rounded-xl border border-green-200">
+                                            <span class="text-sm font-medium">Executive Summary</span>
+                                            <span class="bg-gradient-to-r from-primary to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✓</span>
+                                        </div>
+                                        <div class="flex justify-between items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                                            <span class="text-sm font-medium">Market Analysis</span>
+                                            <span class="bg-gradient-to-r from-secondary to-yellow-400 text-dark px-3 py-1 rounded-full text-xs font-bold">75%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-200">
+                                            <span class="text-sm font-medium">Financial Projections</span>
+                                            <span class="bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">Pending</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex flex-col lg:flex-row-reverse items-center gap-16 step-connector" data-aos="fade-up" data-aos-delay="400">
+                        <div class="lg:w-1/2">
+                            <div class="flex items-center mb-8">
+                                <div class="bg-gradient-to-r from-secondary to-yellow-400 text-dark w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl mr-6 animate-pulse">4</div>
+                                <h3 class="text-3xl font-bold text-dark">Find Funding</h3>
+                            </div>
+                            <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                                Access our database of 500+ funding opportunities, filtered specifically for your location, industry, and business stage. No more endless googling or missing deadlines.
+                            </p>
+                            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 border border-yellow-200">
+                                <p class="text-sm text-gray-500 mb-4 font-semibold">Funding sources include:</p>
+                                <ul class="text-sm text-dark space-y-2">
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                        Government grants & tenders
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                        Private sector funding
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                        Angel investors & VCs
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                        Development programs
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                        Competition prizes
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2" data-aos="fade-right" data-aos-delay="500">
+                            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 animate-float">
+                                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/50">
+                                    <div class="text-center mb-6">
+                                        <span class="text-4xl animate-bounce-slow">💰</span>
+                                        <h4 class="font-bold text-lg mt-4">Funding Opportunities</h4>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow duration-300">
+                                            <div class="flex justify-between items-start mb-3">
+                                                <h5 class="font-semibold text-sm">NYDA Youth Grant</h5>
+                                                <span class="bg-gradient-to-r from-primary to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">R200K</span>
+                                            </div>
+                                            <p class="text-xs text-gray-600">Closes: 15 Feb 2024</p>
+                                        </div>
+                                        <div class="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow duration-300">
+                                            <div class="flex justify-between items-start mb-3">
+                                                <h5 class="font-semibold text-sm">SEDA Tech Incubator</h5>
+                                                <span class="bg-gradient-to-r from-secondary to-yellow-400 text-dark px-3 py-1 rounded-full text-xs font-bold">R500K</span>
+                                            </div>
+                                            <p class="text-xs text-gray-600">Closes: 28 Feb 2024</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="flex flex-col lg:flex-row items-center gap-16" data-aos="fade-up" data-aos-delay="500">
+                        <div class="lg:w-1/2">
+                            <div class="flex items-center mb-8">
+                                <div class="bg-gradient-to-r from-primary to-green-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl mr-6 animate-pulse">5</div>
+                                <h3 class="text-3xl font-bold text-dark">Apply Easily</h3>
+                            </div>
+                            <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                                One-click applications with auto-filled forms using your business profile. Track everything in your dashboard and get WhatsApp reminders for deadlines.
+                            </p>
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+                                <p class="text-sm text-gray-500 mb-4 font-semibold">Application features:</p>
+                                <ul class="text-sm text-dark space-y-2">
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                        Auto-filled application forms
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                        Document management
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                        Deadline reminders
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                        Application tracking
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                        WhatsApp notifications
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2" data-aos="fade-left" data-aos-delay="600">
+                            <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 animate-float">
+                                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/50">
+                                    <div class="text-center mb-6">
+                                        <span class="text-4xl animate-bounce-slow">📤</span>
+                                        <h4 class="font-bold text-lg mt-4">Application Tracker</h4>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl border border-green-200">
+                                            <div>
+                                                <h5 class="font-semibold text-sm">NYDA Grant</h5>
+                                                <p class="text-xs text-gray-600">Submitted</p>
+                                            </div>
+                                            <div class="bg-gradient-to-r from-primary to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✓</div>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                                            <div>
+                                                <h5 class="font-semibold text-sm">SEDA Incubator</h5>
+                                                <p class="text-xs text-gray-600">In Progress</p>
+                                            </div>
+                                            <div class="bg-gradient-to-r from-secondary to-yellow-400 text-dark px-3 py-1 rounded-full text-xs font-bold">85%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial -->
+            <div class="mt-32 bg-gradient-to-r from-primary via-green-600 to-primary rounded-3xl p-12 md:p-16 text-center relative overflow-hidden" data-aos="fade-up" data-aos-delay="700">
+                <div class="absolute inset-0">
+                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+                </div>
+                <div class="relative max-w-4xl mx-auto">
+                    <blockquote class="text-2xl md:text-3xl font-bold text-white mb-8 leading-relaxed">
+                        "I applied for 3 tenders in one week — thanks to FundSpark. Before this, it would have taken me months just to understand the requirements."
+                    </blockquote>
+                    <div class="flex items-center justify-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-secondary to-yellow-400 rounded-full flex items-center justify-center mr-6">
+                            <span class="font-bold text-dark text-xl">L</span>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-white font-semibold text-lg">Lindiwe Mthembu</p>
+                            <p class="text-green-100">Tech Entrepreneur, Soweto</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center mt-20" data-aos="fade-up" data-aos-delay="800">
+                <a href="/auth/signup" class="bg-gradient-to-r from-primary to-green-600 text-white px-10 py-4 rounded-xl button-modern font-bold text-lg inline-flex items-center gap-3 animate-glow">
+                    <span>🚀</span>
+                    Start Your Journey Now
+                </a>
+                <p class="text-gray-600 mt-6 text-lg">Join 5,000+ entrepreneurs who are building their dreams with FundSpark</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-dark to-gray-900 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12" data-aos="fade-up">
+                <div class="md:col-span-2">
+                    <img src="./ipe029mj6f.jpg" alt="FundSpark Logo" class="h-12 w-auto mb-8 filter brightness-0 invert opacity-90">
+                    <p class="text-gray-300 mb-8 max-w-md leading-relaxed">
+                        Empowering South African entrepreneurs with smart funding tools and business planning solutions.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="mailto:info@fundspark.co.za" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Email us">📧</a>
+                        <a href="tel:+27123456789" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Call us">📱</a>
+                        <a href="/dashboard" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Visit dashboard">🌐</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Platform</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="index.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Home</a></li>
+                        <li><a href="how-it-works.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">How It Works</a></li>
+                        <li><a href="pricing.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Pricing</a></li>
+                        <li><a href="resources.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Resources</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Support</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="/dashboard" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Help Center</a></li>
+                        <li><a href="mailto:support@fundspark.co.za" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Contact Us</a></li>
+                        <li><span class="text-gray-500 cursor-not-allowed">Privacy Policy</span></li>
+                        <li><span class="text-gray-500 cursor-not-allowed">Terms of Service</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-16 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2025 FundSpark by Vetma Consultants. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 50
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Enhanced navigation scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('shadow-xl', 'bg-white/95');
+            } else {
+                nav.classList.remove('shadow-xl', 'bg-white/95');
+            }
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.animate-float');
+            parallaxElements.forEach(el => {
+                const speed = scrolled * 0.2;
+                el.style.transform = `translateY(${speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

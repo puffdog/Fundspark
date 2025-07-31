@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Expert Trial - FundSpark</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#28a745',
+                        secondary: '#fcd500',
+                        dark: '#1a1a1a'
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-poppins bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <img src="ipe029mj6f.jpg" alt="FundSpark Logo" class="h-8 w-auto">
+                    <span class="ml-2 text-xl font-bold text-dark">FundSpark</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Home</a>
+                        <a href="about.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">About</a>
+                        <a href="how-it-works.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">How It Works</a>
+                        <a href="pricing.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Pricing</a>
+                        <a href="resources.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Resources</a>
+                        <a href="login.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Signup Form -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div class="text-center">
+                <img src="ipe029mj6f.jpg" alt="FundSpark Logo" class="mx-auto h-12 w-auto">
+                <h2 class="mt-6 text-3xl font-bold text-dark">
+                    Start Your Expert Trial
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    Get 1-on-1 mentorship and guaranteed funding support
+                </p>
+                <div class="mt-4 bg-gradient-to-r from-secondary to-yellow-400 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-dark font-semibold">Expert Plan</span>
+                        <span class="text-2xl font-bold text-dark">R599/month</span>
+                    </div>
+                    <p class="text-sm text-dark/80 mt-1">14-day free trial, then R599/month</p>
+                </div>
+            </div>
+            
+            <form class="mt-8 space-y-6" id="signupForm">
+                <div class="space-y-4">
+                    <div>
+                        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">
+                            Full Name
+                        </label>
+                        <input 
+                            id="fullName" 
+                            name="fullName" 
+                            type="text" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                            placeholder="Enter your full name"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                            Email Address
+                        </label>
+                        <input 
+                            id="email" 
+                            name="email" 
+                            type="email" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                            placeholder="Enter your email address"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                            Password
+                        </label>
+                        <input 
+                            id="password" 
+                            name="password" 
+                            type="password" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                            placeholder="Create a strong password"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">
+                            Confirm Password
+                        </label>
+                        <input 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            type="password" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                            placeholder="Confirm your password"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="businessName" class="block text-sm font-medium text-gray-700 mb-1">
+                            Business Name
+                        </label>
+                        <input 
+                            id="businessName" 
+                            name="businessName" 
+                            type="text" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                            placeholder="Enter your business name"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="fundingGoal" class="block text-sm font-medium text-gray-700 mb-1">
+                            Funding Goal
+                        </label>
+                        <select 
+                            id="fundingGoal" 
+                            name="fundingGoal" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                        >
+                            <option value="">Select funding amount needed</option>
+                            <option value="under-100k">Under R100,000</option>
+                            <option value="100k-500k">R100,000 - R500,000</option>
+                            <option value="500k-1m">R500,000 - R1,000,000</option>
+                            <option value="1m-5m">R1,000,000 - R5,000,000</option>
+                            <option value="over-5m">Over R5,000,000</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <input 
+                        id="terms" 
+                        name="terms" 
+                        type="checkbox" 
+                        required
+                        class="h-4 w-4 text-secondary focus:ring-secondary border-gray-300 rounded"
+                    >
+                    <label for="terms" class="ml-2 block text-sm text-gray-900">
+                        I agree to the <a href="#" class="text-secondary hover:underline">Terms of Service</a> and <a href="#" class="text-secondary hover:underline">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <div>
+                    <button 
+                        type="submit" 
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-dark bg-gradient-to-r from-secondary to-yellow-400 hover:from-secondary hover:to-yellow-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all duration-200"
+                    >
+                        Start 14-Day Expert Trial
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-sm text-gray-600">
+                        Already have an account? 
+                        <a href="login.html" class="font-medium text-secondary hover:underline">
+                            Sign in
+                        </a>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Expert Features -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="text-center">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-4">What's included in Expert:</h3>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex items-center justify-center">
+                            <span class="text-secondary mr-2">✓</span>
+                            Everything in Pro plan
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="text-secondary mr-2">✓</span>
+                            1-on-1 mentor matching
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="text-secondary mr-2">✓</span>
+                            Custom templates & strategies
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="text-secondary mr-2">✓</span>
+                            Funding guarantee program
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="text-secondary mr-2">✓</span>
+                            Dedicated success manager
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="text-secondary mr-2">✓</span>
+                            Priority application processing
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trial Details -->
+            <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <h4 class="text-sm font-semibold text-yellow-900 mb-2">Expert Trial Details</h4>
+                <ul class="text-xs text-yellow-800 space-y-1">
+                    <li>• 14-day free trial with full Expert access</li>
+                    <li>• Mentor matching within 48 hours</li>
+                    <li>• Free funding strategy consultation</li>
+                    <li>• Cancel anytime during trial period</li>
+                    <li>• Dedicated onboarding specialist</li>
+                </ul>
+            </div>
+
+            <!-- Guarantee -->
+            <div class="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                <h4 class="text-sm font-semibold text-green-900 mb-2">🎯 Funding Success Guarantee</h4>
+                <p class="text-xs text-green-800">Expert plan members who follow our guidance for 6 months and don't secure funding receive a full refund.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const businessName = document.getElementById('businessName').value;
+            const fundingGoal = document.getElementById('fundingGoal').value;
+            const terms = document.getElementById('terms').checked;
+            
+            // Basic validation
+            if (!fullName || !email || !password || !confirmPassword || !businessName || !fundingGoal) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+            
+            if (!terms) {
+                alert('Please agree to the Terms of Service and Privacy Policy');
+                return;
+            }
+            
+            // Show success message
+            alert('Expert trial started successfully! Welcome to FundSpark Expert!\n\nYour dedicated mentor will contact you within 48 hours. This is a demo signup.');
+            
+            // Redirect to expert dashboard
+            window.location.href = 'dashboard-expert.html';
+        });
+    </script>
+</body>
+</html>

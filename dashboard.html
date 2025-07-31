@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FundSpark</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#28a745',
+                        secondary: '#fcd500',
+                        dark: '#1a1a1a'
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-poppins bg-gray-50">
+    <!-- Notification Toast -->
+    <div id="notification" class="fixed top-4 right-4 z-50 bg-primary text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
+        <span id="notification-text">Action completed!</span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p class="text-gray-600">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Authentication Required Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg max-w-md w-full p-6 mx-4">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Authentication Required</h3>
+            <p class="text-gray-600 mb-6">Please sign in to access your dashboard.</p>
+            <div class="flex space-x-3">
+                <a href="login.html" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg text-center hover:bg-green-700 transition-colors">
+                    Sign In
+                </a>
+                <a href="signup.html" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-center hover:bg-gray-300 transition-colors">
+                    Sign Up
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+            <div class="flex items-center">
+                <img src="ipe029mj6f.jpg" alt="FundSpark Logo" class="h-8 w-auto">
+                <span class="ml-2 text-xl font-bold text-dark">FundSpark</span>
+            </div>
+            <button id="close-sidebar" class="lg:hidden">
+                <span class="text-gray-500 text-xl">×</span>
+            </button>
+        </div>
+        
+        <nav class="mt-6">
+            <div class="px-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div id="user-avatar" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
+                        ?
+                    </div>
+                    <div>
+                        <p id="user-name" class="text-sm font-medium text-gray-900">Loading...</p>
+                        <p id="user-plan" class="text-xs text-gray-500">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-1 px-3">
+                <a href="#" onclick="showSection('overview')" class="nav-link bg-primary/10 text-primary flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📊</span>
+                    Overview
+                </a>
+                <a href="#" onclick="showSection('business-plan')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📋</span>
+                    Business Plans
+                </a>
+                <a href="#" onclick="showSection('funding')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">💰</span>
+                    Funding Opportunities
+                </a>
+                <a href="#" onclick="showSection('applications')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📄</span>
+                    My Applications
+                </a>
+                <a href="#" onclick="showSection('templates')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">📚</span>
+                    Templates & Resources
+                </a>
+                <a href="#" onclick="showSection('profile')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">👤</span>
+                    Business Profile
+                </a>
+                <a href="#" onclick="showSection('settings')" class="nav-link text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-3 py-2 text-sm font-medium rounded-lg">
+                    <span class="mr-3">⚙️</span>
+                    Settings
+                </a>
+            </div>
+            
+            <div class="mt-8 px-3">
+                <div class="bg-gradient-to-r from-primary to-green-600 rounded-lg p-4 text-white">
+                    <h3 class="text-sm font-semibold mb-2">Upgrade to Pro</h3>
+                    <p class="text-xs mb-3 opacity-90">Get unlimited business plans and priority support</p>
+                    <button onclick="showUpgrade()" class="w-full bg-white text-primary px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors">
+                        Upgrade Now
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="absolute bottom-0 w-full p-3 border-t border-gray-200">
+            <button onclick="logout()" class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg">
+                <span class="mr-3">🚪</span>
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64">
+        <!-- Top Navigation -->
+        <div class="sticky top-0 z-40 lg:mx-auto bg-white border-b border-gray-200">
+            <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+                <button id="open-sidebar" class="lg:hidden">
+                    <span class="text-gray-500 text-xl">☰</span>
+                </button>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden sm:block">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-600">🚀 Real Data Connected</span>
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Live Database</span>
+                        </div>
+                    </div>
+                    <a href="index.html" class="text-sm text-primary hover:underline">← Back to Website</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <main class="py-6">
+            <!-- Overview Section -->
+            <div id="overview-section" class="section-content">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <!-- Welcome Header -->
+                    <div class="mb-8">
+                        <h1 id="welcome-message" class="text-3xl font-bold text-dark">Welcome back! 👋</h1>
+                        <p class="mt-2 text-gray-600">Here's what's happening with your business funding journey.</p>
+                    </div>
+
+                    <!-- Real Data Notice -->
+                    <div class="mb-8 bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <span class="text-2xl">🚀</span>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-green-800">Real Database Connected</h3>
+                                <div class="mt-2 text-sm text-green-700">
+                                    <p>All data is now live! Your business plans, applications, and progress are saved securely.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showSection('business-plan')">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">📋</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Business Plans</dt>
+                                            <dd id="plans-count" class="text-lg font-medium text-gray-900">-</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showSection('funding')">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">💰</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Opportunities</dt>
+                                            <dd id="opportunities-count" class="text-lg font-medium text-gray-900">-</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showSection('applications')">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">📄</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Applications</dt>
+                                            <dd id="applications-count" class="text-lg font-medium text-gray-900">-</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="showSection('templates')">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl">📚</span>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 truncate">Resources</dt>
+                                            <dd id="resources-count" class="text-lg font-medium text-gray-900">-</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Notifications -->
+                    <div id="notifications-container" class="mb-8 hidden">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <button onclick="showCreateBusinessPlan()" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">📝</div>
+                                <h4 class="font-medium text-gray-900">Start Business Plan</h4>
+                                <p class="text-sm text-gray-600 mt-1">Use our guided builder</p>
+                            </button>
+                            <button onclick="showSection('funding')" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">🔍</div>
+                                <h4 class="font-medium text-gray-900">Find Funding</h4>
+                                <p class="text-sm text-gray-600 mt-1">Browse opportunities</p>
+                            </button>
+                            <button onclick="showSection('templates')" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">📚</div>
+                                <h4 class="font-medium text-gray-900">Get Templates</h4>
+                                <p class="text-sm text-gray-600 mt-1">Download resources</p>
+                            </button>
+                            <button onclick="checkProfile()" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left">
+                                <div class="text-2xl mb-2">👤</div>
+                                <h4 class="font-medium text-gray-900">Complete Profile</h4>
+                                <p class="text-sm text-gray-600 mt-1">Get better matches</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white shadow rounded-lg">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Recent Business Plans</h3>
+                            </div>
+                            <div id="recent-plans" class="p-6">
+                                <div class="text-center text-gray-500">
+                                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
+                                    <p class="text-sm">Loading business plans...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Latest Opportunities</h3>
+                            </div>
+                            <div id="recent-opportunities" class="p-6">
+                                <div class="text-center text-gray-500">
+                                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
+                                    <p class="text-sm">Loading opportunities...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Plans Section -->
+            <div id="business-plan-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Business Plans</h1>
+                        <p class="mt-2 text-gray-600">Create and manage your business plans with our guided builder.</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <button onclick="showCreateBusinessPlan()" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                            + Create New Business Plan
+                        </button>
+                    </div>
+
+                    <div id="business-plans-container">
+                        <div class="text-center text-gray-500 py-12">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                            <p>Loading your business plans...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Funding Section -->
+            <div id="funding-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Funding Opportunities</h1>
+                        <p class="mt-2 text-gray-600">Discover grants, investments, and funding opportunities.</p>
+                    </div>
+
+                    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="funding-search" placeholder="Search opportunities..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onkeyup="searchFunding()">
+                        </div>
+                        <select id="funding-type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onchange="filterFunding()">
+                            <option value="">All Types</option>
+                            <option value="grant">Grants</option>
+                            <option value="loan">Loans</option>
+                            <option value="pitch">Pitch Competitions</option>
+                        </select>
+                        <select id="funding-province" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onchange="filterFunding()">
+                            <option value="">All Provinces</option>
+                            <option value="western-cape">Western Cape</option>
+                            <option value="gauteng">Gauteng</option>
+                            <option value="kwazulu-natal">KwaZulu-Natal</option>
+                            <option value="national">National</option>
+                        </select>
+                    </div>
+
+                    <div id="funding-results">
+                        <div class="text-center text-gray-500 py-12">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                            <p>Loading funding opportunities...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications Section -->
+            <div id="applications-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">My Applications</h1>
+                        <p class="mt-2 text-gray-600">Track your funding applications and their status.</p>
+                    </div>
+
+                    <div id="applications-container">
+                        <div class="text-center text-gray-500 py-12">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                            <p>Loading your applications...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Section -->
+            <div id="templates-section" class="section-content hidden">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Templates & Resources</h1>
+                        <p class="mt-2 text-gray-600">Download templates, guides, and resources to help your business succeed.</p>
+                    </div>
+
+                    <div id="resources-container">
+                        <div class="text-center text-gray-500 py-12">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                            <p>Loading resources...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profile-section" class="section-content hidden">
+                <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Business Profile</h1>
+                        <p class="mt-2 text-gray-600">Manage your business information and setup.</p>
+                    </div>
+
+                    <form id="profile-form" class="bg-white shadow rounded-lg p-6">
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
+                                    <input type="text" id="business-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                                    <select id="industry" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        <option value="technology">Technology</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="education">Education</option>
+                                        <option value="finance">Finance</option>
+                                        <option value="retail">Retail</option>
+                                        <option value="manufacturing">Manufacturing</option>
+                                        <option value="agriculture">Agriculture</option>
+                                        <option value="construction">Construction</option>
+                                        <option value="consulting">Consulting</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Business Stage</label>
+                                    <select id="business-stage" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        <option value="idea">Idea Stage</option>
+                                        <option value="startup">Startup</option>
+                                        <option value="growth">Growth</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Province</label>
+                                    <select id="province" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        <option value="western-cape">Western Cape</option>
+                                        <option value="gauteng">Gauteng</option>
+                                        <option value="kwazulu-natal">KwaZulu-Natal</option>
+                                        <option value="eastern-cape">Eastern Cape</option>
+                                        <option value="free-state">Free State</option>
+                                        <option value="limpopo">Limpopo</option>
+                                        <option value="mpumalanga">Mpumalanga</option>
+                                        <option value="north-west">North West</option>
+                                        <option value="northern-cape">Northern Cape</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Business Goals</label>
+                                <textarea id="business-goals" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Describe your business goals and funding objectives..."></textarea>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                    Save Profile
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="section-content hidden">
+                <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-dark">Settings</h1>
+                        <p class="mt-2 text-gray-600">Manage your account preferences and notifications.</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Account Settings -->
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Account Information</h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                        <input type="email" id="user-email" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Account Created</label>
+                                        <input type="text" id="account-created" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Notification Preferences</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">Email Notifications</h4>
+                                        <p class="text-xs text-gray-600">Receive updates about new opportunities</p>
+                                    </div>
+                                    <input type="checkbox" id="email-notifications" checked class="rounded border-gray-300 text-primary focus:ring-primary">
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">Application Updates</h4>
+                                        <p class="text-xs text-gray-600">Get notified about application status changes</p>
+                                    </div>
+                                    <input type="checkbox" id="app-notifications" checked class="rounded border-gray-300 text-primary focus:ring-primary">
+                                </div>
+                                <button onclick="saveNotificationSettings()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Save Preferences
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Upgrade Modal -->
+    <div id="upgrade-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Upgrade Your Plan</h3>
+                <p class="text-gray-600 mb-6">Choose a plan that fits your business needs:</p>
+                
+                <div class="space-y-4">
+                    <div class="border border-primary rounded-lg p-4 bg-primary/5">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-gray-900">Pro Plan</h4>
+                            <span class="text-lg font-bold text-primary">R299/mo</span>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Unlimited business plans</li>
+                            <li>• Premium templates</li>
+                            <li>• Priority support</li>
+                            <li>• Expert consultations</li>
+                        </ul>
+                        <a href="signup-pro.html" class="w-full mt-3 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors inline-block text-center">
+                            Choose Pro
+                        </a>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-gray-900">Expert Plan</h4>
+                            <span class="text-lg font-bold text-gray-900">R599/mo</span>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Everything in Pro</li>
+                            <li>• 1-on-1 mentorship</li>
+                            <li>• Custom templates</li>
+                            <li>• Funding guarantee program</li>
+                        </ul>
+                        <a href="signup-expert.html" class="w-full mt-3 bg-secondary text-dark px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors inline-block text-center">
+                            Choose Expert
+                        </a>
+                    </div>
+                </div>
+                
+                <button onclick="closeUpgrade()" class="w-full mt-4 text-gray-600 hover:text-gray-900">
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic Modal -->
+    <div id="generic-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modal-title" class="text-lg font-bold text-gray-900">Modal Title</h3>
+                    <button onclick="closeGenericModal()" class="text-gray-500 hover:text-gray-700">
+                        <span class="text-2xl">×</span>
+                    </button>
+                </div>
+                <div id="modal-content" class="text-gray-600">
+                    <!-- Modal content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://zmexcsremzhgbrbyfqup.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptZXhjc3JlbXpoZ2JyYnlmcXVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzNzg3MzksImV4cCI6MjA2Njk1NDczOX0.C1lryD1fjJMwSYUjY9oTxAR2Gic2qLMbhYoDZC3chcM';
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Global variables
+        let currentUser = null;
+        let userProfile = null;
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            try {
+                // Skip authentication check - just load the dashboard directly
+                showSection('overview');
+                
+                // Create a fake user for display purposes
+                currentUser = {
+                    id: 'demo-user-' + Date.now(),
+                    email: 'demo@fundspark.com',
+                    user_metadata: {
+                        full_name: 'Demo User'
+                    }
+                };
+                
+                // Load demo data
+                await loadDashboardData();
+                
+                // Update profile display
+                document.getElementById('user-name').textContent = 'Demo User';
+                document.getElementById('user-plan').textContent = 'Free Plan';
+                document.getElementById('user-avatar').textContent = 'D';
+                
+                // Hide any auth modals if they're showing
+                hideAuthModal();
+            } catch (error) {
+                console.log('Info:', error);
+                // Continue anyway - no errors should stop the dashboard from loading
+                showSection('overview');
+            }
+        }
+
+        async function loadUserProfile() {
+            try {
+                // Load or create business profile
+                const { data: profile, error } = await supabase
+                    .from('business_profiles')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') {
+                    throw error;
+                }
+
+                userProfile = profile;
+                updateUserDisplay();
+
+                // Create profile if it doesn't exist
+                if (!profile) {
+                    const { data: newProfile, error: createError } = await supabase
+                        .from('business_profiles')
+                        .insert([
+                            {
+                                user_id: currentUser.id,
+                                business_name: 'My Business',
+                                industry: 'technology',
+                                stage: 'idea',
+                                province: 'western-cape'
+                            }
+                        ])
+                        .select()
+                        .single();
+
+                    if (createError) {
+                        throw createError;
+                    }
+
+                    userProfile = newProfile;
+                    updateUserDisplay();
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showNotification('Error loading profile', 'error');
+            }
+        }
+
+        function updateUserDisplay() {
+            const userName = userProfile?.business_name || currentUser?.email?.split('@')[0] || 'User';
+            const userInitial = userName.charAt(0).toUpperCase();
+            
+            document.getElementById('user-name').textContent = userName;
+            document.getElementById('user-plan').textContent = 'Free Plan';
+            document.getElementById('user-avatar').textContent = userInitial;
+            document.getElementById('welcome-message').textContent = `Welcome back, ${userName}! 👋`;
+            
+            // Update settings
+            if (currentUser?.email) {
+                document.getElementById('user-email').value = currentUser.email;
+            }
+            if (currentUser?.created_at) {
+                document.getElementById('account-created').value = new Date(currentUser.created_at).toLocaleDateString();
+            }
+        }
+
+        async function loadDashboardData() {
+            try {
+                await Promise.all([
+                    loadDashboardStats(),
+                    loadRecentPlans(),
+                    loadRecentOpportunities(),
+                    loadNotifications()
+                ]);
+
+                // Create welcome notifications for new users (only run once)
+                const isNewUser = !localStorage.getItem(`welcome_shown_${currentUser.id}`);
+                if (isNewUser) {
+                    await createWelcomeNotifications();
+                    localStorage.setItem(`welcome_shown_${currentUser.id}`, 'true');
+                    
+                    // Reload notifications to show welcome messages
+                    setTimeout(async () => {
+                        await loadNotifications();
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showNotification('Error loading dashboard data', 'error');
+            }
+        }
+
+        async function loadDashboardStats() {
+            try {
+                // Load business plans count
+                const { count: plansCount } = await supabase
+                    .from('business_plans')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id);
+
+                // Load applications count
+                const { count: applicationsCount } = await supabase
+                    .from('applications')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id);
+
+                // Load opportunities count
+                const { count: opportunitiesCount } = await supabase
+                    .from('funding_opportunities')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('is_active', true);
+
+                // Load resources count
+                const { count: resourcesCount } = await supabase
+                    .from('resources')
+                    .select('*', { count: 'exact', head: true });
+
+                // Update UI
+                document.getElementById('plans-count').textContent = plansCount || 0;
+                document.getElementById('applications-count').textContent = applicationsCount || 0;
+                document.getElementById('opportunities-count').textContent = opportunitiesCount || 0;
+                document.getElementById('resources-count').textContent = resourcesCount || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadRecentPlans() {
+            try {
+                const { data: plans, error } = await supabase
+                    .from('business_plans')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('updated_at', { ascending: false })
+                    .limit(3);
+
+                if (error) throw error;
+
+                const container = document.getElementById('recent-plans');
+                
+                if (!plans || plans.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="text-4xl mb-4">📋</div>
+                            <h4 class="text-lg font-medium text-gray-900 mb-2">No Business Plans Yet</h4>
+                            <p class="text-gray-600 mb-4">Create your first business plan to get started</p>
+                            <button onclick="showCreateBusinessPlan()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Create Business Plan
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = plans.map(plan => {
+                    const progress = calculatePlanProgress(plan.sections);
+                    return `
+                        <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer mb-4" onclick="editBusinessPlan('${plan.id}')">
+                            <h4 class="font-medium text-gray-900">${plan.sections?.title || 'Untitled Plan'}</h4>
+                            <p class="text-sm text-gray-600 mt-1">${plan.sections?.description || 'No description'}</p>
+                            <div class="mt-2 flex items-center text-sm text-gray-500">
+                                <span class="bg-${progress >= 80 ? 'green' : progress >= 50 ? 'yellow' : 'blue'}-100 text-${progress >= 80 ? 'green' : progress >= 50 ? 'yellow' : 'blue'}-800 px-2 py-1 rounded-full text-xs">${progress}% Complete</span>
+                                <span class="ml-2">${new Date(plan.updated_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading recent plans:', error);
+                document.getElementById('recent-plans').innerHTML = `
+                    <div class="text-center text-red-500 py-4">
+                        <p>Error loading business plans</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadRecentOpportunities() {
+            try {
+                const { data: opportunities, error } = await supabase
+                    .from('funding_opportunities')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('created_at', { ascending: false })
+                    .limit(3);
+
+                if (error) throw error;
+
+                const container = document.getElementById('recent-opportunities');
+                
+                if (!opportunities || opportunities.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            <p>No funding opportunities available</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = opportunities.map(opp => `
+                    <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer mb-4" onclick="viewOpportunity('${opp.id}')">
+                        <h4 class="font-medium text-gray-900">${opp.title}</h4>
+                        <p class="text-sm text-gray-600 mt-1">${opp.amount_range || 'Amount not specified'}</p>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <span class="bg-${getTypeColor(opp.type)}-100 text-${getTypeColor(opp.type)}-800 px-2 py-1 rounded-full text-xs">${opp.type}</span>
+                            <span class="ml-2">Due: ${opp.deadline ? new Date(opp.deadline).toLocaleDateString() : 'Open'}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading recent opportunities:', error);
+                document.getElementById('recent-opportunities').innerHTML = `
+                    <div class="text-center text-red-500 py-4">
+                        <p>Error loading opportunities</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadNotifications() {
+            try {
+                const { data: notifications, error } = await supabase
+                    .from('notifications')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .eq('is_read', false)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+
+                if (notifications && notifications.length > 0) {
+                    const container = document.getElementById('notifications-container');
+                    container.classList.remove('hidden');
+                    container.innerHTML = `
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-semibold text-blue-900">🔔 Recent Updates (${notifications.length})</h3>
+                                <button onclick="markAllNotificationsRead()" class="text-xs text-blue-600 hover:text-blue-800 underline">Mark all read</button>
+                            </div>
+                            <div class="space-y-2">
+                                ${notifications.map(notif => `
+                                    <div class="flex items-start justify-between text-sm text-blue-800 py-1">
+                                        <div class="flex-1">
+                                            ${getNotificationIcon(notif.type)} ${notif.message}
+                                            <div class="text-xs text-blue-600 mt-1">${new Date(notif.created_at).toLocaleDateString()}</div>
+                                        </div>
+                                        <button onclick="markNotificationRead('${notif.id}')" class="text-xs text-blue-600 hover:text-blue-800 ml-2">×</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+            }
+        }
+
+        async function markNotificationRead(notificationId) {
+            try {
+                const { error } = await supabase
+                    .from('notifications')
+                    .update({ is_read: true })
+                    .eq('id', notificationId);
+
+                if (error) throw error;
+
+                await loadNotifications(); // Refresh notifications
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        async function markAllNotificationsRead() {
+            try {
+                const { error } = await supabase
+                    .from('notifications')
+                    .update({ is_read: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('is_read', false);
+
+                if (error) throw error;
+
+                document.getElementById('notifications-container').classList.add('hidden');
+                showNotification('All notifications marked as read');
+            } catch (error) {
+                console.error('Error marking notifications as read:', error);
+            }
+        }
+
+        // Create helpful tips for new users
+        async function createWelcomeNotifications() {
+            try {
+                // Check if user has any business plans
+                const { count: plansCount } = await supabase
+                    .from('business_plans')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id);
+
+                // Check if user has filled profile
+                const profile = userProfile;
+
+                const welcomeNotifications = [];
+
+                if (!plansCount || plansCount === 0) {
+                    welcomeNotifications.push({
+                        user_id: currentUser.id,
+                        title: 'Getting Started',
+                        message: '👋 Start by creating your first business plan using our guided builder!',
+                        type: 'info'
+                    });
+                }
+
+                if (!profile?.goals || profile.goals.length < 50) {
+                    welcomeNotifications.push({
+                        user_id: currentUser.id,
+                        title: 'Complete Your Profile',
+                        message: '📝 Complete your business profile to get personalized funding recommendations.',
+                        type: 'warning'
+                    });
+                }
+
+                if (welcomeNotifications.length > 0) {
+                    const { error } = await supabase
+                        .from('notifications')
+                        .insert(welcomeNotifications);
+
+                    if (error) throw error;
+                }
+            } catch (error) {
+                console.error('Error creating welcome notifications:', error);
+            }
+        }
+
+        // Helper functions
+        function calculatePlanProgress(sections) {
+            if (!sections) return 0;
+            const requiredSections = ['title', 'description', 'market_analysis', 'financial_projections'];
+            const completedSections = requiredSections.filter(section => sections[section]);
+            return Math.round((completedSections.length / requiredSections.length) * 100);
+        }
+
+        function getTypeColor(type) {
+            const colors = {
+                'grant': 'blue',
+                'loan': 'orange',
+                'pitch': 'green',
+                'tender': 'purple'
+            };
+            return colors[type] || 'gray';
+        }
+
+        function getNotificationIcon(type) {
+            const icons = {
+                'success': '✅',
+                'warning': '⚠️',
+                'info': 'ℹ️',
+                'error': '❌'
+            };
+            return icons[type] || 'ℹ️';
+        }
+
+        // Navigation and UI functions
+        function showAuthModal() {
+            // Don't show auth modal - we're bypassing authentication
+            return;
+        }
+        
+        function hideAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-modal').classList.remove('flex');
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section-content');
+            sections.forEach(section => section.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('bg-primary/10', 'text-primary');
+                link.classList.add('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
+            });
+            
+            // Set active nav link
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
+                activeLink.classList.add('bg-primary/10', 'text-primary');
+            }
+            
+            // Close mobile menu on selection
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.add('hidden');
+
+            // Load section-specific data
+            loadSectionData(sectionName);
+        }
+
+        async function loadSectionData(sectionName) {
+            switch (sectionName) {
+                case 'funding':
+                    await loadFundingOpportunities();
+                    break;
+                case 'business-plan':
+                    await loadBusinessPlans();
+                    break;
+                case 'applications':
+                    await loadApplications();
+                    break;
+                case 'templates':
+                    await loadResources();
+                    break;
+                case 'profile':
+                    loadProfileForm();
+                    break;
+            }
+        }
+
+        // Load section-specific data functions
+        async function loadFundingOpportunities() {
+            try {
+                const { data: opportunities, error } = await supabase
+                    .from('funding_opportunities')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('deadline', { ascending: true, nullsLast: true });
+
+                if (error) throw error;
+
+                const container = document.getElementById('funding-results');
+                
+                if (!opportunities || opportunities.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="text-6xl mb-4">💰</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No Opportunities Available</h3>
+                            <p class="text-gray-600">Check back later for new funding opportunities.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        ${opportunities.map(opp => `
+                            <div class="bg-white shadow rounded-lg p-6">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900">${opp.title}</h3>
+                                        <span class="bg-${getTypeColor(opp.type)}-100 text-${getTypeColor(opp.type)}-800 px-3 py-1 rounded-full text-sm">${opp.type}</span>
+                                    </div>
+                                    <span class="text-sm text-gray-500">Due: ${opp.deadline ? new Date(opp.deadline).toLocaleDateString() : 'Open'}</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">${opp.description || 'No description available'}</p>
+                                <div class="space-y-2 mb-4 text-sm">
+                                    <div><strong>Amount:</strong> ${opp.amount_range || 'Not specified'}</div>
+                                    <div><strong>Industry:</strong> ${opp.industry || 'Any'}</div>
+                                    <div><strong>Location:</strong> ${opp.province || 'National'}</div>
+                                </div>
+                                <div class="flex space-x-3">
+                                    <button onclick="applyForFunding('${opp.id}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                        Apply Now
+                                    </button>
+                                    <button onclick="viewOpportunity('${opp.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                        More Info
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading funding opportunities:', error);
+                document.getElementById('funding-results').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <p>Error loading funding opportunities</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadBusinessPlans() {
+            try {
+                const { data: plans, error } = await supabase
+                    .from('business_plans')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('updated_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('business-plans-container');
+                
+                if (!plans || plans.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="text-6xl mb-4">📋</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No Business Plans Yet</h3>
+                            <p class="text-gray-600 mb-6">Create your first business plan to get started with funding applications.</p>
+                            <button onclick="showCreateBusinessPlan()" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                Create Your First Plan
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        ${plans.map(plan => {
+                            const progress = calculatePlanProgress(plan.sections);
+                            return `
+                                <div class="bg-white shadow rounded-lg p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-lg font-medium text-gray-900">${plan.sections?.title || 'Untitled Plan'}</h3>
+                                        <span class="bg-${progress >= 80 ? 'green' : progress >= 50 ? 'yellow' : 'blue'}-100 text-${progress >= 80 ? 'green' : progress >= 50 ? 'yellow' : 'blue'}-800 px-3 py-1 rounded-full text-sm">${progress}% Complete</span>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">${plan.sections?.description || 'No description yet'}</p>
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex justify-between text-sm">
+                                            <span>Executive Summary</span>
+                                            <span class="text-${plan.sections?.title ? 'green' : 'gray'}-600">${plan.sections?.title ? '✓' : '○'}</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span>Market Analysis</span>
+                                            <span class="text-${plan.sections?.market_analysis ? 'green' : 'gray'}-600">${plan.sections?.market_analysis ? '✓' : '○'}</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span>Financial Projections</span>
+                                            <span class="text-${plan.sections?.financial_projections ? 'green' : 'gray'}-600">${plan.sections?.financial_projections ? '✓' : '○'}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-3">
+                                        <button onclick="editBusinessPlan('${plan.id}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                            Continue Editing
+                                        </button>
+                                        <button onclick="previewBusinessPlan('${plan.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                            Preview
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading business plans:', error);
+                document.getElementById('business-plans-container').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <p>Error loading business plans</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadApplications() {
+            try {
+                const { data: applications, error } = await supabase
+                    .from('applications')
+                    .select(`
+                        *,
+                        funding_opportunities(title, type, amount_range)
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('applications-container');
+                
+                if (!applications || applications.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="text-6xl mb-4">📄</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No Applications Yet</h3>
+                            <p class="text-gray-600 mb-6">Start applying for funding opportunities to track your progress here.</p>
+                            <button onclick="showSection('funding')" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                Browse Opportunities
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-medium text-gray-900">Application History</h3>
+                        </div>
+                        <div class="divide-y divide-gray-200">
+                            ${applications.map(app => `
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex-1">
+                                            <h4 class="text-base font-medium text-gray-900">${app.funding_opportunities?.title || 'Unknown Opportunity'}</h4>
+                                            <p class="text-sm text-gray-600 mt-1">${app.funding_opportunities?.amount_range || 'Amount not specified'}</p>
+                                            <p class="text-xs text-gray-500 mt-1">Submitted: ${new Date(app.created_at).toLocaleDateString()}</p>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <span class="bg-${getStatusColor(app.status)}-100 text-${getStatusColor(app.status)}-800 px-3 py-1 rounded-full text-sm">${getStatusIcon(app.status)} ${app.status}</span>
+                                            <button onclick="viewApplicationDetails('${app.id}')" class="text-primary hover:underline text-sm">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                document.getElementById('applications-container').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <p>Error loading applications</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadResources(searchTerm = '', typeFilter = '') {
+            try {
+                let query = supabase
+                    .from('resources')
+                    .select('*');
+
+                // Apply filters
+                if (typeFilter) {
+                    query = query.eq('type', typeFilter);
+                }
+
+                // Apply search term
+                if (searchTerm) {
+                    query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
+                }
+
+                query = query.order('is_featured', { ascending: false })
+                           .order('download_count', { ascending: false });
+
+                const { data: resources, error } = await query;
+
+                if (error) throw error;
+
+                const container = document.getElementById('resources-container');
+                
+                if (!resources || resources.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="text-6xl mb-4">📚</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No Resources Found</h3>
+                            <p class="text-gray-600">Try adjusting your search or check back later for new resources.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Add search and filter controls
+                const controlsHTML = `
+                    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="resources-search" value="${searchTerm}" placeholder="Search resources..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onkeyup="searchResources()">
+                        </div>
+                        <select id="resources-type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" onchange="filterResources()">
+                            <option value="">All Types</option>
+                            <option value="template" ${typeFilter === 'template' ? 'selected' : ''}>Templates</option>
+                            <option value="guide" ${typeFilter === 'guide' ? 'selected' : ''}>Guides</option>
+                            <option value="video" ${typeFilter === 'video' ? 'selected' : ''}>Videos</option>
+                            <option value="webinar" ${typeFilter === 'webinar' ? 'selected' : ''}>Webinars</option>
+                        </select>
+                    </div>
+                `;
+
+                container.innerHTML = controlsHTML + `
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600">Found ${resources.length} ${resources.length === 1 ? 'resource' : 'resources'}</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${resources.map(resource => `
+                            <div class="bg-white shadow rounded-lg p-6 ${resource.is_featured ? 'ring-2 ring-primary ring-opacity-20' : ''}">
+                                ${resource.is_featured ? '<div class="bg-primary text-white text-xs px-2 py-1 rounded-full inline-block mb-3">⭐ Featured</div>' : ''}
+                                <div class="text-3xl mb-4">${getResourceIcon(resource.type)}</div>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">${resource.title}</h3>
+                                <p class="text-gray-600 text-sm mb-4">${resource.description || 'No description available'}</p>
+                                ${resource.tags && resource.tags.length > 0 ? `
+                                    <div class="flex flex-wrap gap-1 mb-4">
+                                        ${resource.tags.slice(0, 3).map(tag => `<span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">${tag}</span>`).join('')}
+                                    </div>
+                                ` : ''}
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs bg-${getTypeColor(resource.type)}-100 text-${getTypeColor(resource.type)}-800 px-2 py-1 rounded">${resource.type}</span>
+                                    <button onclick="downloadResource('${resource.id}')" class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                                        Download
+                                    </button>
+                                </div>
+                                <div class="mt-2 text-xs text-gray-500">
+                                    Downloaded: ${resource.download_count || 0} times
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading resources:', error);
+                document.getElementById('resources-container').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <p>Error loading resources</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Search and filter functions for resources
+        function searchResources() {
+            const searchTerm = document.getElementById('resources-search').value;
+            const typeFilter = document.getElementById('resources-type').value;
+            loadResources(searchTerm, typeFilter);
+        }
+
+        function filterResources() {
+            const searchTerm = document.getElementById('resources-search') ? document.getElementById('resources-search').value : '';
+            const typeFilter = document.getElementById('resources-type').value;
+            loadResources(searchTerm, typeFilter);
+        }
+
+        function loadProfileForm() {
+            if (userProfile) {
+                document.getElementById('business-name').value = userProfile.business_name || '';
+                document.getElementById('industry').value = userProfile.industry || 'technology';
+                document.getElementById('business-stage').value = userProfile.stage || 'idea';
+                document.getElementById('province').value = userProfile.province || 'western-cape';
+                document.getElementById('business-goals').value = userProfile.goals || '';
+            }
+        }
+
+        // Helper functions for UI
+        function getStatusColor(status) {
+            const colors = {
+                'draft': 'blue',
+                'submitted': 'yellow',
+                'approved': 'green',
+                'rejected': 'red',
+                'pending': 'yellow'
+            };
+            return colors[status] || 'gray';
+        }
+
+        function getStatusIcon(status) {
+            const icons = {
+                'draft': '📝',
+                'submitted': '⏳',
+                'approved': '✅',
+                'rejected': '❌',
+                'pending': '⏳'
+            };
+            return icons[status] || '📄';
+        }
+
+        function getResourceIcon(type) {
+            const icons = {
+                'template': '📋',
+                'guide': '📖',
+                'video': '🎥',
+                'webinar': '🎯'
+            };
+            return icons[type] || '📄';
+        }
+
+        // Action functions
+        async function showCreateBusinessPlan() {
+            const content = `
+                <form id="create-plan-form">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Business Plan Title</label>
+                            <input type="text" id="plan-title" placeholder="e.g., My Tech Startup" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Business Description</label>
+                            <textarea id="plan-description" rows="3" placeholder="Briefly describe your business..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required></textarea>
+                        </div>
+                        <div class="flex space-x-3 pt-4">
+                            <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Create Business Plan
+                            </button>
+                            <button type="button" onclick="closeGenericModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            `;
+            
+            showModal('Create New Business Plan', content);
+            
+            document.getElementById('create-plan-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await createBusinessPlan();
+            });
+        }
+
+        async function createBusinessPlan() {
+            try {
+                const title = document.getElementById('plan-title').value;
+                const description = document.getElementById('plan-description').value;
+
+                const { data, error } = await supabase
+                    .from('business_plans')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            profile_id: userProfile?.id,
+                            sections: {
+                                title: title,
+                                description: description
+                            },
+                            status: 'draft'
+                        }
+                    ])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                closeGenericModal();
+                showNotification('Business plan created successfully!');
+                showSection('business-plan');
+                await loadBusinessPlans();
+            } catch (error) {
+                console.error('Error creating business plan:', error);
+                showNotification('Error creating business plan', 'error');
+            }
+        }
+
+        async function editBusinessPlan(planId) {
+            try {
+                const { data: plan, error } = await supabase
+                    .from('business_plans')
+                    .select('*')
+                    .eq('id', planId)
+                    .single();
+
+                if (error) throw error;
+
+                const content = `
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-gray-900">${plan.sections?.title || 'Untitled Plan'}</h4>
+                            <p class="text-sm text-gray-600 mt-1">${plan.sections?.description || 'No description'}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button onclick="editSection('${planId}', 'executive-summary')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="font-medium text-gray-900">Executive Summary</h5>
+                                        <p class="text-xs text-gray-600 mt-1">Company overview and mission</p>
+                                    </div>
+                                    <span class="text-${plan.sections?.title ? 'green' : 'gray'}-600">${plan.sections?.title ? '✓' : '○'}</span>
+                                </div>
+                            </button>
+                            
+                            <button onclick="editSection('${planId}', 'market-analysis')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="font-medium text-gray-900">Market Analysis</h5>
+                                        <p class="text-xs text-gray-600 mt-1">Target market and competition</p>
+                                    </div>
+                                    <span class="text-${plan.sections?.market_analysis ? 'green' : 'gray'}-600">${plan.sections?.market_analysis ? '✓' : '○'}</span>
+                                </div>
+                            </button>
+                            
+                            <button onclick="editSection('${planId}', 'financial-projections')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="font-medium text-gray-900">Financial Projections</h5>
+                                        <p class="text-xs text-gray-600 mt-1">Revenue and expense forecasts</p>
+                                    </div>
+                                    <span class="text-${plan.sections?.financial_projections ? 'green' : 'gray'}-600">${plan.sections?.financial_projections ? '✓' : '○'}</span>
+                                </div>
+                            </button>
+                            
+                            <button onclick="editSection('${planId}', 'marketing-strategy')" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="font-medium text-gray-900">Marketing Strategy</h5>
+                                        <p class="text-xs text-gray-600 mt-1">Customer acquisition plan</p>
+                                    </div>
+                                    <span class="text-${plan.sections?.marketing_strategy ? 'green' : 'gray'}-600">${plan.sections?.marketing_strategy ? '✓' : '○'}</span>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <div class="flex space-x-3 pt-4">
+                            <button onclick="generatePDF('${planId}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Generate PDF
+                            </button>
+                            <button onclick="shareBusinessPlan('${planId}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                showModal(`Edit ${plan.sections?.title || 'Business Plan'}`, content);
+            } catch (error) {
+                console.error('Error loading business plan:', error);
+                showNotification('Error loading business plan', 'error');
+            }
+        }
+
+        async function editSection(planId, sectionName) {
+            try {
+                const { data: plan, error } = await supabase
+                    .from('business_plans')
+                    .select('*')
+                    .eq('id', planId)
+                    .single();
+
+                if (error) throw error;
+
+                const sectionContent = plan.sections?.[sectionName] || '';
+                
+                const content = `
+                    <form id="section-form">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">${sectionName.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</label>
+                                <textarea id="section-content" rows="8" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter ${sectionName.replace('-', ' ')} content...">${sectionContent}</textarea>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Save Section
+                                </button>
+                                <button type="button" onclick="editBusinessPlan('${planId}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                
+                showModal(`Edit ${sectionName.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}`, content);
+                
+                document.getElementById('section-form').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    await updatePlanSection(planId, sectionName);
+                });
+            } catch (error) {
+                console.error('Error loading section:', error);
+                showNotification('Error loading section', 'error');
+            }
+        }
+
+        async function updatePlanSection(planId, sectionName) {
+            try {
+                const content = document.getElementById('section-content').value;
+
+                const { data: plan, error: fetchError } = await supabase
+                    .from('business_plans')
+                    .select('sections')
+                    .eq('id', planId)
+                    .single();
+
+                if (fetchError) throw fetchError;
+
+                const updatedSections = {
+                    ...plan.sections,
+                    [sectionName]: content
+                };
+
+                const { error: updateError } = await supabase
+                    .from('business_plans')
+                    .update({
+                        sections: updatedSections,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', planId);
+
+                if (updateError) throw updateError;
+
+                showNotification('Section updated successfully!');
+                editBusinessPlan(planId);
+                await loadRecentPlans();
+            } catch (error) {
+                console.error('Error updating section:', error);
+                showNotification('Error updating section', 'error');
+            }
+        }
+
+        async function applyForFunding(opportunityId) {
+            try {
+                const { data: opportunity, error } = await supabase
+                    .from('funding_opportunities')
+                    .select('*')
+                    .eq('id', opportunityId)
+                    .single();
+
+                if (error) throw error;
+
+                const content = `
+                    <form id="funding-application-form">
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-blue-900">${opportunity.title}</h4>
+                                <p class="text-sm text-blue-800 mt-1">${opportunity.amount_range || 'Amount not specified'}</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Requested Amount</label>
+                                <input type="text" id="requested-amount" placeholder="e.g., R150,000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Why do you need this funding?</label>
+                                <textarea id="funding-reason" rows="4" placeholder="Describe how you'll use the funds..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required></textarea>
+                            </div>
+                            
+                            <div class="flex space-x-3 pt-4">
+                                <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Submit Application
+                                </button>
+                                <button type="button" onclick="closeGenericModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                
+                showModal(`Apply for ${opportunity.title}`, content);
+                
+                document.getElementById('funding-application-form').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    await submitApplication(opportunityId);
+                });
+            } catch (error) {
+                console.error('Error loading opportunity:', error);
+                showNotification('Error loading opportunity', 'error');
+            }
+        }
+
+        async function submitApplication(opportunityId) {
+            try {
+                const requestedAmount = document.getElementById('requested-amount').value;
+                const reason = document.getElementById('funding-reason').value;
+
+                const { error } = await supabase
+                    .from('applications')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            funding_id: opportunityId,
+                            status: 'submitted',
+                            checklist: {
+                                requested_amount: requestedAmount,
+                                reason: reason
+                            }
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                closeGenericModal();
+                showNotification('Application submitted successfully!');
+                
+                // Create notification
+                await supabase
+                    .from('notifications')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            title: 'Application Submitted',
+                            message: 'Your funding application has been submitted successfully',
+                            type: 'success'
+                        }
+                    ]);
+
+                await loadDashboardStats();
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                showNotification('Error submitting application', 'error');
+            }
+        }
+
+        async function downloadResource(resourceId) {
+            try {
+                // Get resource details first
+                const { data: resource, error: resourceError } = await supabase
+                    .from('resources')
+                    .select('*')
+                    .eq('id', resourceId)
+                    .single();
+
+                if (resourceError) throw resourceError;
+
+                // Update download count
+                const { error } = await supabase
+                    .rpc('increment_download_count', { resource_id: resourceId });
+
+                if (error) {
+                    console.error('Error updating download count:', error);
+                }
+
+                // Simulate download (in a real app, this would trigger actual file download)
+                showNotification(`Downloading "${resource.title}"... Check your downloads folder!`);
+                
+                // Create notification for the user
+                await supabase
+                    .from('notifications')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            title: 'Resource Downloaded',
+                            message: `You downloaded "${resource.title}"`,
+                            type: 'info'
+                        }
+                    ]);
+
+                // Refresh resources to show updated count
+                const searchTerm = document.getElementById('resources-search') ? document.getElementById('resources-search').value : '';
+                const typeFilter = document.getElementById('resources-type') ? document.getElementById('resources-type').value : '';
+                await loadResources(searchTerm, typeFilter);
+            } catch (error) {
+                console.error('Error downloading resource:', error);
+                showNotification('Error downloading resource', 'error');
+            }
+        }
+
+        // Profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await saveProfile();
+        });
+
+        async function saveProfile() {
+            try {
+                const profileData = {
+                    business_name: document.getElementById('business-name').value,
+                    industry: document.getElementById('industry').value,
+                    stage: document.getElementById('business-stage').value,
+                    province: document.getElementById('province').value,
+                    goals: document.getElementById('business-goals').value,
+                    updated_at: new Date().toISOString()
+                };
+
+                const { error } = await supabase
+                    .from('business_profiles')
+                    .upsert([
+                        {
+                            id: userProfile?.id,
+                            user_id: currentUser.id,
+                            ...profileData
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                userProfile = { ...userProfile, ...profileData };
+                updateUserDisplay();
+                showNotification('Profile saved successfully!');
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showNotification('Error saving profile', 'error');
+            }
+        }
+
+        // Utility functions
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 ${
+                type === 'success' ? 'bg-primary text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                'bg-blue-500 text-white'
+            }`;
+            
+            notification.classList.remove('translate-x-full');
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        function showModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('generic-modal').classList.remove('hidden');
+        }
+
+        function closeGenericModal() {
+            document.getElementById('generic-modal').classList.add('hidden');
+        }
+
+        function showUpgrade() {
+            document.getElementById('upgrade-modal').classList.remove('hidden');
+        }
+
+        function closeUpgrade() {
+            document.getElementById('upgrade-modal').classList.add('hidden');
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                showNotification('Logged out successfully!');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } catch (error) {
+                console.error('Error logging out:', error);
+                showNotification('Error logging out', 'error');
+            }
+        }
+
+        // Mobile menu functionality
+        document.getElementById('open-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.remove('hidden');
+        });
+
+        document.getElementById('close-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.add('hidden');
+        });
+
+        document.getElementById('mobile-menu-overlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('mobile-menu-overlay').classList.add('hidden');
+        });
+
+        // Search and filter functions with real database queries
+        let allFundingOpportunities = [];
+
+        async function searchFunding() {
+            const searchTerm = document.getElementById('funding-search').value.toLowerCase();
+            const typeFilter = document.getElementById('funding-type').value;
+            const provinceFilter = document.getElementById('funding-province').value;
+            
+            await loadFundingOpportunities(searchTerm, typeFilter, provinceFilter);
+        }
+
+        async function filterFunding() {
+            const searchTerm = document.getElementById('funding-search').value.toLowerCase();
+            const typeFilter = document.getElementById('funding-type').value;
+            const provinceFilter = document.getElementById('funding-province').value;
+            
+            await loadFundingOpportunities(searchTerm, typeFilter, provinceFilter);
+        }
+
+        async function loadFundingOpportunities(searchTerm = '', typeFilter = '', provinceFilter = '') {
+            try {
+                let query = supabase
+                    .from('funding_opportunities')
+                    .select('*')
+                    .eq('is_active', true);
+
+                // Apply filters
+                if (typeFilter) {
+                    query = query.eq('type', typeFilter);
+                }
+                
+                if (provinceFilter) {
+                    query = query.eq('province', provinceFilter);
+                }
+
+                // Apply search term
+                if (searchTerm) {
+                    query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,industry.ilike.%${searchTerm}%`);
+                }
+
+                query = query.order('deadline', { ascending: true, nullsLast: true });
+
+                const { data: opportunities, error } = await query;
+
+                if (error) throw error;
+
+                allFundingOpportunities = opportunities || [];
+                renderFundingOpportunities(allFundingOpportunities);
+
+            } catch (error) {
+                console.error('Error loading funding opportunities:', error);
+                document.getElementById('funding-results').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <p>Error loading funding opportunities</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderFundingOpportunities(opportunities) {
+            const container = document.getElementById('funding-results');
+            
+            if (!opportunities || opportunities.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">🔍</div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No Opportunities Found</h3>
+                        <p class="text-gray-600">Try adjusting your search terms or filters.</p>
+                        <button onclick="clearFilters()" class="mt-4 text-primary hover:underline">Clear all filters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600">Found ${opportunities.length} funding ${opportunities.length === 1 ? 'opportunity' : 'opportunities'}</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    ${opportunities.map(opp => `
+                        <div class="bg-white shadow rounded-lg p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">${opp.title}</h3>
+                                    <span class="bg-${getTypeColor(opp.type)}-100 text-${getTypeColor(opp.type)}-800 px-3 py-1 rounded-full text-sm">${opp.type}</span>
+                                </div>
+                                <span class="text-sm text-gray-500">Due: ${opp.deadline ? new Date(opp.deadline).toLocaleDateString() : 'Open'}</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">${opp.description || 'No description available'}</p>
+                            <div class="space-y-2 mb-4 text-sm">
+                                <div><strong>Amount:</strong> ${opp.amount_range || 'Not specified'}</div>
+                                <div><strong>Industry:</strong> ${opp.industry || 'Any'}</div>
+                                <div><strong>Location:</strong> ${opp.province || 'National'}</div>
+                                ${opp.requires_documents ? `<div><strong>Required docs:</strong> ${opp.document_list ? opp.document_list.slice(0, 2).join(', ') + (opp.document_list.length > 2 ? '...' : '') : 'Various documents'}</div>` : ''}
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="applyForFunding('${opp.id}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Apply Now
+                                </button>
+                                <button onclick="viewOpportunityDetails('${opp.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                    More Info
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function clearFilters() {
+            document.getElementById('funding-search').value = '';
+            document.getElementById('funding-type').value = '';
+            document.getElementById('funding-province').value = '';
+            loadFundingOpportunities();
+        }
+
+        async function viewOpportunityDetails(opportunityId) {
+            try {
+                const { data: opportunity, error } = await supabase
+                    .from('funding_opportunities')
+                    .select('*')
+                    .eq('id', opportunityId)
+                    .single();
+
+                if (error) throw error;
+
+                const content = `
+                    <div class="space-y-6">
+                        <div class="bg-${getTypeColor(opportunity.type)}-50 p-4 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-lg font-semibold text-${getTypeColor(opportunity.type)}-900">${opportunity.title}</h4>
+                                <span class="bg-${getTypeColor(opportunity.type)}-100 text-${getTypeColor(opportunity.type)}-800 px-3 py-1 rounded-full text-sm">${opportunity.type}</span>
+                            </div>
+                            <p class="text-${getTypeColor(opportunity.type)}-800">${opportunity.description}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-medium text-gray-900 mb-2">💰 Funding Details</h5>
+                                <p class="text-sm text-gray-600"><strong>Amount:</strong> ${opportunity.amount_range || 'Not specified'}</p>
+                                <p class="text-sm text-gray-600 mt-1"><strong>Deadline:</strong> ${opportunity.deadline ? new Date(opportunity.deadline).toLocaleDateString() : 'Open application'}</p>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-medium text-gray-900 mb-2">🎯 Eligibility</h5>
+                                <p class="text-sm text-gray-600"><strong>Industry:</strong> ${opportunity.industry || 'Any industry'}</p>
+                                <p class="text-sm text-gray-600 mt-1"><strong>Location:</strong> ${opportunity.province || 'National'}</p>
+                            </div>
+                        </div>
+                        
+                        ${opportunity.requires_documents && opportunity.document_list ? `
+                            <div class="bg-yellow-50 p-4 rounded-lg">
+                                <h5 class="font-medium text-yellow-900 mb-2">📄 Required Documents</h5>
+                                <ul class="text-sm text-yellow-800 space-y-1">
+                                    ${opportunity.document_list.map(doc => `<li>• ${doc}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        
+                        ${opportunity.submission_link ? `
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h5 class="font-medium text-blue-900 mb-2">🔗 Application Link</h5>
+                                <a href="${opportunity.submission_link}" target="_blank" class="text-sm text-blue-700 hover:underline break-all">${opportunity.submission_link}</a>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="flex space-x-3 pt-4">
+                            <button onclick="applyForFunding('${opportunity.id}'); closeGenericModal();" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Apply for This Funding
+                            </button>
+                            <button onclick="shareOpportunity('${opportunity.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                showModal(`${opportunity.title} - Details`, content);
+            } catch (error) {
+                console.error('Error loading opportunity details:', error);
+                showNotification('Error loading opportunity details', 'error');
+            }
+        }
+
+        function shareOpportunity(opportunityId) {
+            const shareUrl = `${window.location.origin}/dashboard.html?opportunity=${opportunityId}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showNotification('Share link copied to clipboard!');
+            }).catch(() => {
+                showNotification('Unable to copy link', 'error');
+            });
+        }
+
+        // Enhanced opportunity viewing
+        function viewOpportunity(id) {
+            viewOpportunityDetails(id);
+        }
+
+        function previewBusinessPlan(id) {
+            showNotification('Opening business plan preview...');
+        }
+
+        function generatePDF(id) {
+            showNotification('Generating PDF... (Feature coming soon)');
+        }
+
+        function shareBusinessPlan(id) {
+            showNotification('Share link copied to clipboard!');
+        }
+
+        function viewApplicationDetails(id) {
+            showNotification('Loading application details...');
+        }
+
+        function checkProfile() {
+            showSection('profile');
+        }
+
+        function saveNotificationSettings() {
+            showNotification('Notification preferences saved!');
+        }
+    </script>
+</body>
+</html>

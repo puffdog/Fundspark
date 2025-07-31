@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FundSpark - Empowering South African Entrepreneurs</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#28a745',
+                        secondary: '#fcd500',
+                        dark: '#1a1a1a'
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif']
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.8s ease-out'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(3deg); }
+            50% { transform: translateY(-20px) rotate(0deg); }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(40, 167, 69, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(40, 167, 69, 0.6); }
+        }
+        @keyframes slideUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #28a745, #fcd500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .button-modern {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .button-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .button-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        .button-modern:hover::before {
+            left: 100%;
+        }
+    </style>
+</head>
+<body class="font-poppins bg-white overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-lg shadow-lg fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <img src="./ipe029mj6f.jpg" alt="FundSpark Logo" class="h-8 w-auto transition-transform duration-300 hover:scale-110">
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="index.html" class="text-primary bg-primary/10 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Home</a>
+                        <a href="how-it-works.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">How It Works</a>
+                        <a href="about.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">About</a>
+                        <a href="pricing.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Pricing</a>
+                        <a href="resources.html" class="text-dark hover:text-primary hover:bg-primary/5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200">Resources</a>
+                        <a href="signup.html" class="bg-gradient-to-r from-primary to-green-600 text-white px-5 py-2 rounded-lg button-modern font-medium text-sm inline-block">Start Free Trial</a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-dark hover:text-primary focus:outline-none transition-colors duration-200">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/95 backdrop-blur-lg border-t rounded-b-lg">
+                    <a href="index.html" class="text-primary bg-primary/10 block px-3 py-2 text-base font-medium rounded-lg">Home</a>
+                    <a href="how-it-works.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">How It Works</a>
+                    <a href="about.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">About</a>
+                    <a href="pricing.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">Pricing</a>
+                    <a href="resources.html" class="text-dark hover:text-primary hover:bg-primary/5 block px-3 py-2 text-base font-medium rounded-lg transition-all duration-200">Resources</a>
+                    <a href="signup.html" class="bg-gradient-to-r from-primary to-green-600 text-white px-5 py-2 rounded-lg w-full mt-4 button-modern font-medium text-sm inline-block text-center">Start Free Trial</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <section class="pt-16 min-h-screen">
+        <!-- Hero Section -->
+        <div class="relative bg-gradient-to-br from-secondary/5 via-white to-primary/5 overflow-hidden">
+            <!-- Background Effects -->
+            <div class="absolute inset-0">
+                <div class="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow"></div>
+                <div class="absolute top-40 right-10 w-72 h-72 bg-secondary/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-2000"></div>
+                <div class="absolute -bottom-8 left-20 w-72 h-72 bg-blue-200/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-4000"></div>
+            </div>
+            
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24" data-aos="fade-up">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div data-aos="fade-right" data-aos-delay="200">
+                        <h1 class="text-4xl md:text-6xl font-bold text-dark leading-tight mb-8">
+                            Access funding. Build your plan. 
+                            <span class="gradient-text">Win tenders</span> — all in one place.
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-10 leading-relaxed">
+                            Empowering South African startups, youth & NPOs with tools that simplify success.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="signup.html" class="bg-gradient-to-r from-primary to-green-600 text-white px-6 py-3 rounded-lg button-modern font-semibold text-base inline-flex items-center gap-2">
+                                <span>🚀</span>
+                                Start Free Trial
+                            </a>
+                            <a href="how-it-works.html" class="bg-gradient-to-r from-secondary to-yellow-400 text-dark px-6 py-3 rounded-lg button-modern font-semibold text-base text-center inline-flex items-center gap-2">
+                                <span>🎯</span>
+                                Explore How It Works
+                            </a>
+                        </div>
+                    </div>
+                    <div class="lg:pl-12" data-aos="fade-left" data-aos-delay="400">
+                        <div class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 animate-float border border-white/20">
+                            <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-6 mb-4">
+                                <h3 class="font-bold text-primary text-lg mb-4 flex items-center gap-2">
+                                    <span>📊</span>
+                                    Dashboard Preview
+                                </h3>
+                                <div class="space-y-4">
+                                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-transform duration-300 hover:scale-105">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600 font-medium">Active Applications</span>
+                                            <span class="bg-gradient-to-r from-secondary to-yellow-400 text-dark px-3 py-1 rounded-full text-xs font-bold animate-pulse">3</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-transform duration-300 hover:scale-105">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600 font-medium">Funding Opportunities</span>
+                                            <span class="bg-gradient-to-r from-primary to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">12</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-transform duration-300 hover:scale-105">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600 font-medium">Business Plan Status</span>
+                                            <span class="bg-gradient-to-r from-green-100 to-green-200 text-primary px-3 py-1 rounded-full text-xs font-bold">85%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem Section -->
+        <div class="bg-gradient-to-br from-gray-50 to-gray-100 py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-5xl font-bold text-center text-dark mb-20" data-aos="fade-up">
+                    Why most startups fail <span class="gradient-text">(and how we fix it)</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="text-center group" data-aos="fade-up" data-aos-delay="100">
+                        <div class="bg-gradient-to-br from-red-100 to-red-200 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                            <span class="text-4xl">💸</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">No funding</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Most entrepreneurs don't know where to find funding opportunities</p>
+                        <div class="text-primary font-semibold bg-primary/10 px-4 py-2 rounded-lg inline-flex items-center gap-2">
+                            <span>→</span>
+                            We find it for you
+                        </div>
+                    </div>
+                    <div class="text-center group" data-aos="fade-up" data-aos-delay="200">
+                        <div class="bg-gradient-to-br from-orange-100 to-orange-200 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                            <span class="text-4xl">🧠</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">No business plan</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Creating a proper business plan seems overwhelming and expensive</p>
+                        <div class="text-primary font-semibold bg-primary/10 px-4 py-2 rounded-lg inline-flex items-center gap-2">
+                            <span>→</span>
+                            We build it for you
+                        </div>
+                    </div>
+                    <div class="text-center group" data-aos="fade-up" data-aos-delay="300">
+                        <div class="bg-gradient-to-br from-yellow-100 to-yellow-200 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                            <span class="text-4xl">📄</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">Tenders are confusing</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Tender applications are complex and time-consuming</p>
+                        <div class="text-primary font-semibold bg-primary/10 px-4 py-2 rounded-lg inline-flex items-center gap-2">
+                            <span>→</span>
+                            We simplify it
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Preview Cards -->
+        <div class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-dark mb-20" data-aos="fade-up">
+                    Everything you need in <span class="gradient-text">one platform</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-3xl shadow-lg p-8 hover:shadow-2xl transition-all duration-500 border border-gray-100 group hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100">
+                        <div class="bg-gradient-to-br from-primary/10 to-primary/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                            <span class="text-3xl">📝</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">Business Plan Builder</h3>
+                        <p class="text-gray-600 mb-8 leading-relaxed">Guided questions and smart suggestions help you create a professional business plan in minutes, not months.</p>
+                        <div class="inline-flex items-center gap-2 text-primary font-semibold text-sm bg-primary/10 px-3 py-1 rounded-lg">
+                            <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                            Interactive • Templates • Auto-suggestions
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-lg p-8 hover:shadow-2xl transition-all duration-500 border border-gray-100 group hover:-translate-y-2" data-aos="fade-up" data-aos-delay="200">
+                        <div class="bg-gradient-to-br from-secondary/20 to-secondary/30 w-20 h-20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                            <span class="text-3xl">💰</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">Funding Database</h3>
+                        <p class="text-gray-600 mb-8 leading-relaxed">Access hundreds of funding opportunities filtered by your location, industry, and business stage.</p>
+                        <div class="inline-flex items-center gap-2 text-primary font-semibold text-sm bg-primary/10 px-3 py-1 rounded-lg">
+                            <span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+                            Live updates • Location-based • Industry-specific
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-lg p-8 hover:shadow-2xl transition-all duration-500 border border-gray-100 group hover:-translate-y-2" data-aos="fade-up" data-aos-delay="300">
+                        <div class="bg-gradient-to-br from-green-100 to-green-200 w-20 h-20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                            <span class="text-3xl">🔔</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">Smart Alerts</h3>
+                        <p class="text-gray-600 mb-8 leading-relaxed">Never miss a deadline again. Get WhatsApp reminders and email alerts for applications and submissions.</p>
+                        <div class="inline-flex items-center gap-2 text-primary font-semibold text-sm bg-primary/10 px-3 py-1 rounded-lg">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            WhatsApp • Email • Deadline tracking
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust Section -->
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+                <h3 class="text-center text-gray-600 font-semibold mb-12 text-lg">Trusted by entrepreneurs nationwide</h3>
+                <div class="flex flex-wrap justify-center items-center gap-8 opacity-70">
+                    <div class="bg-white/70 backdrop-blur-sm px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">SAB KickStart</div>
+                    <div class="bg-white/70 backdrop-blur-sm px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">NYDA</div>
+                    <div class="bg-white/70 backdrop-blur-sm px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">SEDA</div>
+                    <div class="bg-white/70 backdrop-blur-sm px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">IDC</div>
+                    <div class="bg-white/70 backdrop-blur-sm px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">GCIP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final CTA -->
+        <div class="bg-gradient-to-r from-primary via-green-600 to-primary py-24 relative overflow-hidden">
+            <!-- Background Effects -->
+            <div class="absolute inset-0">
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-black/5 to-transparent"></div>
+                <div class="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+                <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+            </div>
+            
+            <div class="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-8 leading-tight">
+                    You don't need a consultant to get started. You just need FundSpark.
+                </h2>
+                <p class="text-green-100 text-xl mb-10 leading-relaxed">
+                    Join thousands of South African entrepreneurs who are building their dreams with our platform.
+                </p>
+                <a href="signup.html" class="bg-gradient-to-r from-secondary to-yellow-400 text-dark px-8 py-4 rounded-xl button-modern font-bold text-lg inline-flex items-center gap-3 animate-glow">
+                    <span>🚀</span>
+                    Start Free Trial
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-dark to-gray-900 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12" data-aos="fade-up">
+                <div class="md:col-span-2">
+                    <img src="./ipe029mj6f.jpg" alt="FundSpark Logo" class="h-12 w-auto mb-8 filter brightness-0 invert opacity-90">
+                    <p class="text-gray-300 mb-8 max-w-md leading-relaxed">
+                        Empowering South African entrepreneurs with smart funding tools and business planning solutions.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="mailto:info@fundspark.co.za" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Email us">📧</a>
+                        <a href="tel:+27123456789" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Call us">📱</a>
+                        <a href="dashboard.html" class="bg-gray-700/50 backdrop-blur-sm p-3 rounded-xl hover:bg-primary/20 transition-all duration-300 hover:scale-110" title="Visit dashboard">🌐</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Platform</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="index.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Home</a></li>
+                        <li><a href="how-it-works.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">How It Works</a></li>
+                        <li><a href="pricing.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Pricing</a></li>
+                        <li><a href="resources.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Resources</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Support</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="dashboard.html" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Help Center</a></li>
+                        <li><a href="mailto:support@fundspark.co.za" class="hover:text-secondary transition-colors duration-200 hover:translate-x-2 inline-block">Contact Us</a></li>
+                        <li><span class="text-gray-500 cursor-not-allowed">Privacy Policy</span></li>
+                        <li><span class="text-gray-500 cursor-not-allowed">Terms of Service</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-16 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2025 FundSpark by Vetma Consultants. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 50
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Enhanced navigation scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('shadow-xl', 'bg-white/95');
+            } else {
+                nav.classList.remove('shadow-xl', 'bg-white/95');
+            }
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.animate-float');
+            if (parallax) {
+                const speed = scrolled * 0.5;
+                parallax.style.transform = `translateY(${speed}px) rotate(3deg)`;
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
